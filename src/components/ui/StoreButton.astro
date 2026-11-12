@@ -1,0 +1,89 @@
+---
+import { site } from '@/config/site';
+
+interface Props {
+  tone?: 'dark' | 'light';
+  class?: string;
+}
+
+const { tone = 'dark', class: className } = Astro.props;
+const url = site.app.playStoreUrl;
+const Tag = url ? 'a' : 'div';
+const linkProps = url
+  ? { href: url, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Get Tech Plaza on Google Play' }
+  : { role: 'note', 'aria-label': 'Tech Plaza is coming soon to Google Play' };
+---
+
+<Tag class:list={['store', `store--${tone}`, { 'store--soon': !url }, className]} {...linkProps}>
+  <svg class="store__logo" viewBox="0 0 24 26" aria-hidden="true">
+    <path fill="#00d7fe" d="M1.1.6C.8.9.6 1.4.6 2v22c0 .6.2 1.1.5 1.4l.1.1L13.5 13.2v-.3L1.2.5z"></path>
+    <path fill="#ffce00" d="M17.6 17.3 13.5 13.2v-.3l4.1-4.1.1.1 4.9 2.8c1.4.8 1.4 2.1 0 2.9l-4.9 2.8z"></path>
+    <path fill="#ff3a44" d="M17.7 17.2 13.5 13 1.1 25.4c.5.5 1.2.5 2.1.1l14.5-8.3"></path>
+    <path fill="#00f076" d="M17.7 8.8 3.2.5C2.4 0 1.6.1 1.1.6L13.5 13z"></path>
+  </svg>
+  <span class="store__text">
+    <span class="store__small">{url ? 'Get it on' : 'Coming soon on'}</span>
+    <span class="store__big">Google Play</span>
+  </span>
+</Tag>
+
+<style>
+  .store {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 54px;
+    padding: 0.5rem 1.25rem 0.5rem 1rem;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    line-height: 1.1;
+    transition:
+      transform var(--dur-fast) var(--ease),
+      box-shadow var(--dur-fast) var(--ease),
+      background-color var(--dur-fast) var(--ease);
+  }
+
+  .store--dark {
+    background: var(--slate-900);
+    color: #fff;
+    box-shadow: 0 10px 24px -12px rgb(15 23 42 / 0.6);
+  }
+
+  .store--light {
+    background: #fff;
+    color: var(--slate-900);
+  }
+
+  a.store:hover {
+    transform: translateY(-2px);
+  }
+
+  .store--soon {
+    cursor: default;
+  }
+
+  .store__logo {
+    width: 24px;
+    height: 26px;
+    flex: none;
+  }
+
+  .store__text {
+    display: grid;
+    text-align: left;
+  }
+
+  .store__small {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .store__big {
+    font-size: 1.1875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+</style>

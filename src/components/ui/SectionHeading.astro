@@ -1,0 +1,61 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  align?: 'center' | 'start';
+  tone?: 'default' | 'inverse';
+  /** Heading level, so pages keep a correct outline. */
+  as?: 'h1' | 'h2';
+  id?: string;
+}
+
+const { eyebrow, title, lead, align = 'center', tone = 'default', as: Tag = 'h2', id } = Astro.props;
+---
+
+<header class:list={['heading', `heading--${align}`, `heading--${tone}`]} data-reveal>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Tag id={id} class="heading__title" set:html={title} />
+  {lead && <p class="lead heading__lead">{lead}</p>}
+  <slot />
+</header>
+
+<style>
+  .heading {
+    display: grid;
+    gap: 1rem;
+    max-width: 44rem;
+    margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+
+  .heading--center {
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .heading__title {
+    font-size: var(--fs-2xl);
+  }
+
+  .heading__title :global(em) {
+    font-style: normal;
+    color: var(--brand);
+  }
+
+  .heading--inverse .eyebrow {
+    color: var(--accent);
+  }
+
+  .heading--inverse .heading__title {
+    color: #fff;
+  }
+
+  .heading--inverse .heading__title :global(em) {
+    color: var(--accent);
+  }
+
+  .heading--inverse .heading__lead {
+    color: rgb(255 255 255 / 0.72);
+  }
+</style>

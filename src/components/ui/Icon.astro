@@ -1,0 +1,26 @@
+---
+import { icons, type IconName } from './icons';
+
+interface Props {
+  name: IconName;
+  size?: number;
+  strokeWidth?: number;
+  class?: string;
+  /** Accessible label. Without one the icon is hidden from screen readers. */
+  label?: string;
+}
+
+const { name, size = 20, strokeWidth = 2, class: className, label } = Astro.props;
+
+const a11y = label
+  ? `role="img" aria-label="${label}"`
+  : 'aria-hidden="true" focusable="false"';
+
+const svg = icons[name]
+  .replace(/\swidth="24"/, ` width="${size}"`)
+  .replace(/\sheight="24"/, ` height="${size}"`)
+  .replace(/stroke-width="2"/, `stroke-width="${strokeWidth}"`)
+  .replace(/class="[^"]*"/, `class="icon${className ? ` ${className}` : ''}" ${a11y}`);
+---
+
+<Fragment set:html={svg} />

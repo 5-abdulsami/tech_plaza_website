@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/brand/logo.png';
+import { site } from '@/config/site';
+
+interface Props {
+  tone?: 'default' | 'inverse';
+  size?: number;
+  /** Hide the word mark (icon only). */
+  compact?: boolean;
+}
+
+const { tone = 'default', size = 40, compact = false } = Astro.props;
+---
+
+<a href="/" class:list={['logo', `logo--${tone}`]} aria-label={`${site.name} home`}>
+  <Image src={logo} alt="" width={size} height={size} widths={[size, size * 2]} sizes={`${size}px`} format="webp" loading="eager" />
+  {!compact && <span class="logo__word">Tech<span> Plaza</span></span>}
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-weight: 700;
+    font-size: 1.1875rem;
+    letter-spacing: -0.03em;
+    color: var(--brand);
+  }
+
+  .logo img {
+    border-radius: 50%;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .logo:hover img {
+    transform: rotate(-12deg) scale(1.04);
+  }
+
+  .logo__word span {
+    color: var(--text);
+  }
+
+  .logo--inverse,
+  .logo--inverse .logo__word span {
+    color: #fff;
+  }
+</style>

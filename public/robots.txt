@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://techplaza.app/sitemap-index.xml

@@ -1,0 +1,137 @@
+---
+import Logo from '@/components/ui/Logo.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { footerNav, site } from '@/config/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <Logo tone="inverse" />
+      <p class="footer__tagline">{site.tagline}. The electronics shops of {site.city}’s tech plazas, in one app.</p>
+      <a class="footer__mail" href={`mailto:${site.contact.email}`}>
+        <Icon name="mail" size={18} />
+        {site.contact.email}
+      </a>
+    </div>
+
+    {
+      footerNav.map((col) => (
+        <nav class="footer__col" aria-label={col.title}>
+          <h2 class="footer__heading">{col.title}</h2>
+          <ul role="list">
+            {col.links.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+
+  <div class="container footer__base">
+    <p>© {year} {site.name}. All rights reserved.</p>
+    <p class="footer__made">
+      <Icon name="map-pin" size={16} /> Made in {site.city}, Pakistan
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-top: clamp(3.5rem, 3rem + 3vw, 5.5rem);
+    background: var(--brand-900);
+    color: rgb(255 255 255 / 0.68);
+    font-size: var(--fs-sm);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.6fr repeat(4, 1fr);
+    gap: 2.5rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .footer__brand {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 1.25rem;
+    max-width: 22rem;
+  }
+
+  .footer__tagline {
+    line-height: 1.7;
+  }
+
+  .footer__mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    font-weight: 500;
+    transition: color var(--dur-fast);
+  }
+
+  .footer__mail:hover {
+    color: var(--accent);
+  }
+
+  .footer__heading {
+    margin-bottom: 1.1rem;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .footer__col ul {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .footer__col a {
+    transition: color var(--dur-fast);
+  }
+
+  .footer__col a:hover {
+    color: #fff;
+  }
+
+  .footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-block: 1.75rem;
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+    font-size: var(--fs-xs);
+  }
+
+  .footer__made {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  @media (max-width: 1023px) {
+    .footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .footer__grid {
+      gap: 2rem 1.5rem;
+    }
+  }
+</style>

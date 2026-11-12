@@ -1,0 +1,143 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+type Variant = 'primary' | 'accent' | 'secondary' | 'ghost' | 'light' | 'outline-light';
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'class'> {
+  href: string;
+  variant?: Variant;
+  size?: 'md' | 'lg';
+  icon?: IconName;
+  iconStart?: IconName;
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconStart,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const external = /^https?:\/\//.test(href);
+---
+
+<a
+  href={href}
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+  {...rest}
+>
+  {iconStart && <Icon name={iconStart} size={18} />}
+  <span><slot /></span>
+  {icon && <Icon name={icon} size={18} class="btn__trail" />}
+</a>
+
+<style>
+  .btn {
+    --pad-x: 1.25rem;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 46px;
+    padding: 0.625rem var(--pad-x);
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    transition:
+      background-color var(--dur-fast) var(--ease),
+      border-color var(--dur-fast) var(--ease),
+      color var(--dur-fast) var(--ease),
+      box-shadow var(--dur-fast) var(--ease),
+      transform var(--dur-fast) var(--ease);
+  }
+
+  .btn:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .btn--lg {
+    --pad-x: 1.6rem;
+    min-height: 54px;
+    font-size: var(--fs-md);
+  }
+
+  .btn :global(.btn__trail) {
+    transition: transform var(--dur-fast) var(--ease);
+  }
+
+  .btn:hover :global(.btn__trail) {
+    transform: translateX(3px);
+  }
+
+  .btn--primary {
+    background: var(--brand);
+    color: #fff;
+    box-shadow: 0 8px 20px -8px rgb(17 30 115 / 0.55);
+  }
+
+  .btn--primary:hover {
+    background: var(--brand-600);
+    box-shadow: 0 12px 28px -10px rgb(17 30 115 / 0.6);
+  }
+
+  .btn--accent {
+    background: var(--accent);
+    color: var(--slate-900);
+    box-shadow: 0 8px 20px -8px rgb(245 158 11 / 0.6);
+  }
+
+  .btn--accent:hover {
+    background: #fbb12e;
+  }
+
+  .btn--secondary {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn--secondary:hover {
+    border-color: var(--slate-300);
+    background: var(--slate-50);
+  }
+
+  .btn--ghost {
+    color: var(--brand);
+    --pad-x: 0.75rem;
+  }
+
+  .btn--ghost:hover {
+    background: var(--brand-tint);
+  }
+
+  .btn--light {
+    background: #fff;
+    color: var(--brand);
+  }
+
+  .btn--light:hover {
+    background: var(--brand-tint);
+  }
+
+  .btn--outline-light {
+    color: #fff;
+    border-color: rgb(255 255 255 / 0.3);
+  }
+
+  .btn--outline-light:hover {
+    background: rgb(255 255 255 / 0.1);
+    border-color: rgb(255 255 255 / 0.5);
+  }
+</style>
