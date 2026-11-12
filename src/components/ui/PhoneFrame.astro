@@ -37,12 +37,12 @@ const { src, alt, width = 300, eager = false, class: className } = Astro.props;
 </div>
 
 <style>
+  /* Thin bezel; the screen keeps the screenshot's exact ratio so nothing is cropped. */
   .phone {
     position: relative;
     width: 100%;
-    aspect-ratio: 493 / 1071;
-    padding: 3.2%;
-    border-radius: 13% / 6%;
+    padding: 1.8%;
+    border-radius: 9% / 4.2%;
     background: linear-gradient(145deg, #1e293b, #0b1120 60%, #1e293b);
     box-shadow:
       inset 0 0 0 1.5px rgb(255 255 255 / 0.08),
@@ -54,9 +54,9 @@ const { src, alt, width = 300, eager = false, class: className } = Astro.props;
     /* camera */
     content: '';
     position: absolute;
-    top: 2.4%;
+    top: 1.6%;
     left: 50%;
-    width: 4.5%;
+    width: 3.2%;
     aspect-ratio: 1;
     border-radius: 50%;
     translate: -50% 0;
@@ -68,9 +68,9 @@ const { src, alt, width = 300, eager = false, class: className } = Astro.props;
   .phone__screen {
     position: relative;
     width: 100%;
-    height: 100%;
+    aspect-ratio: 493 / 1071;
     overflow: hidden;
-    border-radius: 10.5% / 4.9%;
+    border-radius: 7.4% / 3.4%;
     background: var(--slate-50);
   }
 

@@ -96,7 +96,7 @@ export const trustPoints: Feature[] = [
   {
     icon: 'lock',
     title: 'Private documents stay private',
-    body: 'CNIC images and payment proofs are kept in private storage. Only the owner and our admins can open them.',
+    body: 'CNIC images are kept in private storage. Only the shop owner and our admins can open them.',
   },
   {
     icon: 'shield-check',

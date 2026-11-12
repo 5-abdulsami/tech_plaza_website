@@ -50,13 +50,9 @@ If you run a shop on Tech Plaza, you also agree that:
 
 We review every new shop and every new product before customers can see it. We may approve, reject or ask for changes, and we will tell you the reason. Approval does not mean we guarantee your shop or products to customers.
 
-## Plans and payments
+## Fees
 
-- During launch, approved shops get the **Basic plan free of charge**.
-- We may introduce paid plans with higher listing limits. We will tell shop owners before any paid plan starts, and no one is moved to a paid plan without choosing it.
-- When paid plans are active, you pay outside the app (Easypaisa, JazzCash or bank transfer) and upload proof. Your plan starts once we have confirmed the payment.
-- Fees are for a monthly period and are not refundable once the plan has started, unless the law requires otherwise or we cancel the plan ourselves.
-- If a plan ends and you are over the new limit, extra listings are hidden, not deleted.
+Tech Plaza is free for customers and for shops. If that ever changes, we will tell you in advance, and you will never be charged without agreeing to it first.
 
 ## Ratings and content
 

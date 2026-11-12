@@ -47,7 +47,7 @@ export const footerNav = [
     links: [
       { label: 'List your shop', href: '/shop-owners' },
       { label: 'How approval works', href: '/shop-owners#onboarding' },
-      { label: 'Plans', href: '/shop-owners#plans' },
+      { label: 'Free to list', href: '/shop-owners#free' },
     ],
   },
   {

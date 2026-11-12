@@ -25,7 +25,6 @@ Signing in with Google? Send the email from that Google account’s address.
 
 ## What we may keep
 
-- **Payment records** (amount, date, method and reference), kept for up to 5 years for accounting and legal reasons
 - Information we must keep by law, or to deal with fraud or a dispute
 - **Messages** you sent to other people may stay in their chat history
 

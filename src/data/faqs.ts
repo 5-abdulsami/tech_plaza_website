@@ -24,7 +24,7 @@ const general: Faq[] = [
   },
   {
     q: 'Is the app free?',
-    a: 'Yes, for customers it is completely free. Shops can also list for free while we launch.',
+    a: 'Yes. Tech Plaza is completely free, for customers and for shops.',
   },
   {
     q: 'Which plazas are on Tech Plaza?',
@@ -70,11 +70,11 @@ const owners: Faq[] = [
   },
   {
     q: 'How much does it cost?',
-    a: 'Listing is free while we launch, and every approved shop gets the Basic plan. Paid plans with more listings may be introduced later. We will tell you well before anything changes.',
+    a: 'Nothing. Listing your shop and products on Tech Plaza is free, with no commission on your sales.',
   },
   {
     q: 'How many products can I list?',
-    a: 'The Basic plan includes 10 live listings, plus room to keep 20 hidden ones. Hidden listings stay saved and can go live again in one tap.',
+    a: 'Your dashboard shows how many listings are live and how many more you can add. Hidden listings stay saved and can go live again in one tap.',
   },
   {
     q: 'Can I see who follows my shop?',

@@ -9,7 +9,7 @@ Built with [Astro](https://astro.build) as a fully static site. No backend, no t
 | URL | Source | Purpose |
 | --- | --- | --- |
 | `/` | `src/pages/index.astro` | Home: hero, how it works, features, shop owners, trust, plazas, FAQ |
-| `/shop-owners` | `src/pages/shop-owners.astro` | Onboarding steps, tools, plans, owner FAQ |
+| `/shop-owners` | `src/pages/shop-owners.astro` | Onboarding steps, tools, free-to-list section, owner FAQ |
 | `/help` | `src/pages/help.astro` | Help centre with grouped FAQs and contact options |
 | `/privacy` | `src/pages/privacy.md` | Privacy policy (needed for the Play Store listing) |
 | `/terms` | `src/pages/terms.md` | Terms & conditions |
@@ -38,7 +38,7 @@ src/
 │   ├── shop-owners/   Shop owner page sections
 │   └── ui/            Reusable building blocks (Button, Icon, PhoneFrame, FaqList, ...)
 ├── config/site.ts     Site name, URLs, contact email, Play Store link, navigation
-├── data/              All page copy that is a list: features, FAQs, plazas, plans, steps
+├── data/              All page copy that is a list: features, FAQs, plazas, onboarding steps
 ├── layouts/           BaseLayout (SEO, header, footer) and LegalLayout (Markdown pages)
 ├── pages/             One file per route
 ├── scripts/           Small client scripts (scroll reveal)
@@ -51,7 +51,7 @@ scripts/               Build helpers (brand asset generator)
 
 - **App goes live on Google Play:** set `app.playStoreUrl` in `src/config/site.ts`. Every download button switches from "Coming soon" to a real link.
 - **Contact email:** `contact.email` in `src/config/site.ts`.
-- **Add or edit a plaza, category, FAQ, feature or plan:** edit the matching file in `src/data/`. Plans mirror `subscription_model.dart` in the app.
+- **Add or edit a plaza, category, FAQ, feature or onboarding step:** edit the matching file in `src/data/`.
 - **Edit a legal page:** edit the Markdown file in `src/pages/` and update `legalUpdated` in `src/config/site.ts`.
 - **Add an icon:** import it from `lucide-static` in `src/components/ui/icons.ts` and add it to the map.
 - **Change the logo:** replace `src/assets/brand/logo.png`, then run `npm run brand` to regenerate the favicons, app icons and `public/og-image.png`.
