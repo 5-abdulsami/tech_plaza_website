@@ -1,0 +1,191 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/layout/PageHeader.astro';
+import FaqList from '@/components/ui/FaqList.astro';
+import Icon from '@/components/ui/Icon.astro';
+import type { IconName } from '@/components/ui/icons';
+import { helpFaqs } from '@/data/faqs';
+import { site } from '@/config/site';
+
+const contacts: { icon: IconName; title: string; body: string; href: string; cta: string }[] = [
+  {
+    icon: 'mail',
+    title: 'Email support',
+    body: 'Questions about the app, your account or a shop. A real person reads every message.',
+    href: `mailto:${site.contact.email}`,
+    cta: site.contact.email,
+  },
+  {
+    icon: 'store',
+    title: 'List your shop',
+    body: 'Run a shop in one of our plazas? We’ll help you get set up.',
+    href: '/shop-owners',
+    cta: 'Shop owner guide',
+  },
+  {
+    icon: 'trash',
+    title: 'Delete your account',
+    body: 'Remove your account and the data linked to it.',
+    href: '/delete-account',
+    cta: 'How deletion works',
+  },
+];
+---
+
+<BaseLayout title="Help centre" description="Answers to common questions about Tech Plaza for customers and shop owners, and how to contact us.">
+  <PageHeader
+    eyebrow="Help centre"
+    title="How can we <em>help?</em>"
+    lead="Find quick answers below, or get in touch and a real person will reply."
+  >
+    <nav class="help-jump" aria-label="Help topics" data-reveal style="--reveal-i:3">
+      {helpFaqs.map((g) => <a href={`#${g.id}`}>{g.title}</a>)}
+    </nav>
+  </PageHeader>
+
+  <section id="contact" class="container help-contact" aria-label="Contact options">
+    {
+      contacts.map((c, i) => (
+        <a class="contact" href={c.href} data-reveal style={`--reveal-i:${i}`}>
+          <span class="contact__icon">
+            <Icon name={c.icon} size={22} />
+          </span>
+          <h2>{c.title}</h2>
+          <p>{c.body}</p>
+          <span class="contact__cta">
+            {c.cta} <Icon name="arrow-right" size={16} />
+          </span>
+        </a>
+      ))
+    }
+  </section>
+
+  <div class="container-narrow help-groups">
+    {
+      helpFaqs.map((group) => (
+        <section id={group.id} class="help-group" aria-labelledby={`${group.id}-title`}>
+          <h2 id={`${group.id}-title`} data-reveal>
+            {group.title}
+          </h2>
+          <FaqList items={group.items} group={group.id} />
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .help-jump {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .help-jump a {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    color: var(--text-2);
+    transition:
+      background-color var(--dur-fast),
+      color var(--dur-fast),
+      border-color var(--dur-fast);
+  }
+
+  .help-jump a:hover {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+  }
+
+  .help-contact {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: clamp(3.5rem, 2rem + 5vw, 6rem);
+  }
+
+  .contact {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding: 1.75rem;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition:
+      transform 0.4s var(--ease),
+      box-shadow 0.4s var(--ease),
+      border-color 0.4s var(--ease),
+      opacity var(--dur) var(--ease);
+  }
+
+  .contact:hover {
+    transform: translateY(-4px);
+    border-color: var(--brand-tint-2);
+    box-shadow: var(--shadow);
+  }
+
+  .contact__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.4rem;
+    border-radius: 14px;
+    background: var(--brand-tint);
+    color: var(--brand);
+  }
+
+  .contact h2 {
+    font-size: 1.125rem;
+  }
+
+  .contact p {
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+
+  .contact__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--brand);
+    overflow-wrap: anywhere;
+  }
+
+  .contact__cta :global(svg) {
+    flex: none;
+    transition: transform var(--dur-fast) var(--ease);
+  }
+
+  .contact:hover .contact__cta :global(svg) {
+    transform: translateX(3px);
+  }
+
+  .help-groups {
+    display: grid;
+    gap: clamp(3rem, 2rem + 3vw, 4.5rem);
+    padding-bottom: var(--section-y);
+  }
+
+  .help-group h2 {
+    margin-bottom: 1.25rem;
+    font-size: var(--fs-xl);
+  }
+
+  @media (max-width: 859px) {
+    .help-contact {
+      grid-template-columns: 1fr;
+      max-width: 34rem;
+    }
+  }
+</style>

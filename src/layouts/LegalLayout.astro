@@ -1,0 +1,280 @@
+---
+/**
+ * Layout for Markdown content pages (privacy, terms, account deletion).
+ * Frontmatter: title, description, eyebrow?, lead?
+ */
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import PageHeader from '@/components/layout/PageHeader.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { site } from '@/config/site';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+    eyebrow?: string;
+    lead?: string;
+    /** Hide the table of contents for short pages. */
+    toc?: boolean;
+  };
+  headings: MarkdownHeading[];
+}
+
+const { frontmatter, headings } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2);
+const showToc = frontmatter.toc !== false && toc.length > 2;
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <PageHeader
+    eyebrow={frontmatter.eyebrow ?? 'Legal'}
+    title={frontmatter.title}
+    lead={frontmatter.lead}
+    meta={`Last updated ${site.legalUpdated}`}
+  />
+
+  <div class:list={['container', 'legal', { 'legal--toc': showToc }]}>
+    {
+      showToc && (
+        <aside class="legal__toc" aria-label="On this page">
+          <p class="legal__toc-title">On this page</p>
+          <ol role="list">
+            {toc.map((h) => (
+              <li>
+                <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                  {h.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      )
+    }
+
+    <article class="prose" data-prose>
+      <slot />
+      <aside class="legal__contact">
+        <Icon name="mail" size={20} />
+        <p>
+          Questions about this page? Email us at <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
+        </p>
+      </aside>
+    </article>
+  </div>
+</BaseLayout>
+
+<script>
+  // Highlight the section currently in view in the table of contents.
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')].map((a) => [a.dataset.tocLink!, a]),
+  );
+  if (links.size) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          links.forEach((a) => a.removeAttribute('aria-current'));
+          links.get(entry.target.id)?.setAttribute('aria-current', 'true');
+        }
+      },
+      { rootMargin: '-20% 0px -70% 0px' },
+    );
+    links.forEach((_, id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+  }
+</script>
+
+<style>
+  .legal {
+    padding-bottom: var(--section-y);
+  }
+
+  .legal--toc {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 72ch);
+    justify-content: center;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .legal:not(.legal--toc) .prose {
+    margin-inline: auto;
+  }
+
+  .legal__toc {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+    font-size: var(--fs-sm);
+  }
+
+  .legal__toc-title {
+    margin-bottom: 0.75rem;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .legal__toc ol {
+    display: grid;
+    gap: 0.125rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .legal__toc a {
+    display: block;
+    margin-left: -1px;
+    padding: 0.4rem 0 0.4rem 1rem;
+    border-left: 2px solid transparent;
+    color: var(--text-2);
+    line-height: 1.4;
+    transition:
+      color var(--dur-fast),
+      border-color var(--dur-fast);
+  }
+
+  .legal__toc a:hover {
+    color: var(--text);
+  }
+
+  .legal__toc a[aria-current] {
+    color: var(--brand);
+    font-weight: 600;
+    border-left-color: var(--brand);
+  }
+
+  /* Prose */
+  .prose {
+    max-width: 72ch;
+    color: var(--text-2);
+    font-size: var(--fs-md);
+    line-height: 1.75;
+    overflow-wrap: break-word;
+  }
+
+  .prose :global(h2) {
+    margin: 2.75rem 0 1rem;
+    font-size: var(--fs-xl);
+    color: var(--text);
+    scroll-margin-top: calc(var(--header-h) + 24px);
+  }
+
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .prose :global(h3) {
+    margin: 2rem 0 0.75rem;
+    font-size: 1.125rem;
+    color: var(--text);
+  }
+
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-bottom: 1.1rem;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.25rem;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 0.45rem;
+  }
+
+  .prose :global(li::marker) {
+    color: var(--brand);
+  }
+
+  .prose :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .prose :global(a) {
+    color: var(--brand);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--brand-tint-2);
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--dur-fast);
+  }
+
+  .prose :global(a:hover) {
+    text-decoration-color: var(--brand);
+  }
+
+  .prose :global(table) {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-collapse: collapse;
+    font-size: var(--fs-sm);
+    display: block;
+    overflow-x: auto;
+  }
+
+  .prose :global(th),
+  .prose :global(td) {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose :global(th) {
+    color: var(--text);
+    font-weight: 600;
+    background: var(--slate-100);
+  }
+
+  .prose :global(blockquote) {
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.25rem;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    background: var(--accent-tint);
+    color: var(--slate-800);
+  }
+
+  .prose :global(blockquote p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .legal__contact {
+    display: flex;
+    gap: 0.875rem;
+    align-items: flex-start;
+    margin-top: 3rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--brand-tint);
+    color: var(--brand);
+  }
+
+  .legal__contact :global(svg) {
+    flex: none;
+    margin-top: 0.2rem;
+  }
+
+  .legal__contact p {
+    margin: 0;
+    color: var(--slate-700);
+    font-size: var(--fs-sm);
+  }
+
+  @media (max-width: 899px) {
+    .legal--toc {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .legal__toc {
+      display: none;
+    }
+  }
+</style>

@@ -197,9 +197,7 @@ const isActive = (href: string) => !href.includes('#') && href === path;
   .menu {
     position: fixed;
     inset: var(--header-h) 0 0;
-    background: rgb(255 255 255 / 0.96);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: #fff;
     opacity: 0;
     transition: opacity 0.3s var(--ease);
     overflow-y: auto;

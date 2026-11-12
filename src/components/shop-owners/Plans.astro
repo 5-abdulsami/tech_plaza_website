@@ -1,0 +1,218 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { paymentMethods, plans } from '@/data/owners';
+
+const pkr = new Intl.NumberFormat('en-PK');
+const methods = new Intl.ListFormat('en', { type: 'disjunction' }).format(paymentMethods);
+---
+
+<section id="plans" class="section plans" aria-labelledby="plans-title">
+  <div class="container">
+    <SectionHeading
+      id="plans-title"
+      eyebrow="Plans"
+      title="Free while we launch. <em>Fair after that.</em>"
+      lead="Every approved shop gets the Basic plan at no cost during launch. If paid plans start later, we’ll tell you well in advance and you choose whether to upgrade."
+    />
+
+    <div class="plans__free" data-reveal>
+      <span class="plans__free-icon"><Icon name="sparkles" size={22} /></span>
+      <div>
+        <strong>Launch offer: Basic plan, free</strong>
+        <p>10 live listings and 20 hidden ones, a full storefront, customer chat, ratings and followers.</p>
+      </div>
+    </div>
+
+    <div class="plans__grid">
+      {
+        plans.map((plan, i) => (
+          <article class:list={['plan', { 'plan--highlight': plan.highlight }]} data-reveal style={`--reveal-i:${i}`}>
+            <h3 class="plan__name">{plan.name}</h3>
+            <p class="plan__price">
+              <span class="plan__currency">Rs</span>
+              {pkr.format(plan.price)}
+              <span class="plan__per">/ month</span>
+            </p>
+            <ul role="list" class="plan__list">
+              <li>
+                <Icon name="check" size={16} strokeWidth={2.5} />
+                <span>
+                  <strong>{plan.activeListings}</strong> live listings
+                </span>
+              </li>
+              <li>
+                <Icon name="check" size={16} strokeWidth={2.5} />
+                {plan.hiddenListings} hidden listings saved
+              </li>
+              <li>
+                <Icon name="check" size={16} strokeWidth={2.5} />
+                Shop page, chat, ratings
+              </li>
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="plans__note" data-reveal>
+      <Icon name="clock" size={16} />
+      <span>
+        {`Paid plans aren’t active yet. When they are, you’ll pay by ${methods} and upload a screenshot in the app. We confirm it by hand.`}
+      </span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .plans__free {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    max-width: 760px;
+    margin: 0 auto 2.5rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(120deg, #fffbeb, #fff);
+    border: 1px solid rgb(245 158 11 / 0.45);
+  }
+
+  .plans__free-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--accent);
+    color: var(--slate-900);
+  }
+
+  .plans__free strong {
+    font-size: 1.0625rem;
+  }
+
+  .plans__free p {
+    font-size: var(--fs-sm);
+    color: var(--text-2);
+  }
+
+  .plans__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    max-width: 980px;
+    margin-inline: auto;
+  }
+
+  .plan {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition:
+      transform 0.4s var(--ease),
+      box-shadow 0.4s var(--ease),
+      opacity var(--dur) var(--ease);
+  }
+
+  .plan:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+
+  .plan--highlight {
+    border-color: var(--brand);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .plan__name {
+    font-size: 1.125rem;
+    color: var(--text-2);
+  }
+
+  .plan__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: var(--fs-2xl);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+  }
+
+  .plan__currency {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-3);
+    letter-spacing: 0;
+  }
+
+  .plan__per {
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 0;
+  }
+
+  .plan__list {
+    display: grid;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .plan__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--fs-sm);
+    color: var(--text-2);
+  }
+
+  .plan__list :global(svg) {
+    flex: none;
+    color: var(--success);
+  }
+
+  .plan__list strong {
+    color: var(--text);
+  }
+
+  .plans__note {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    max-width: 44rem;
+    margin: 2rem auto 0;
+    font-size: var(--fs-sm);
+    color: var(--text-3);
+    text-align: center;
+  }
+
+  .plans__note :global(svg) {
+    flex: none;
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 859px) {
+    .plans__grid {
+      grid-template-columns: 1fr;
+      max-width: 26rem;
+    }
+
+    .plan--highlight {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .plans__free {
+      align-items: flex-start;
+    }
+  }
+</style>

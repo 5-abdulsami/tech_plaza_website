@@ -1,0 +1,25 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import OwnersHero from '@/components/shop-owners/OwnersHero.astro';
+import Onboarding from '@/components/shop-owners/Onboarding.astro';
+import Tools from '@/components/shop-owners/Tools.astro';
+import Plans from '@/components/shop-owners/Plans.astro';
+import FaqSection from '@/components/sections/FaqSection.astro';
+import DownloadCta from '@/components/sections/DownloadCta.astro';
+import { ownerFaqs } from '@/data/faqs';
+---
+
+<BaseLayout
+  title="List your shop"
+  description="Put your Rawalpindi tech plaza shop on Tech Plaza. Free storefront, product listings and customer chat during launch."
+>
+  <OwnersHero />
+  <Onboarding />
+  <Tools />
+  <Plans />
+  <FaqSection items={ownerFaqs} id="owner-faq" eyebrow="Shop owner FAQ" />
+  <DownloadCta
+    title="Ready to bring more customers to your counter?"
+    lead="Email us and we’ll help you set up your shop, or download the app as soon as it’s on Google Play."
+  />
+</BaseLayout>

@@ -1,0 +1,163 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import Icon from '@/components/ui/Icon.astro';
+import dashboard from '@/assets/screens/owner-dashboard.png';
+import products from '@/assets/screens/owner-products.png';
+import addProduct from '@/assets/screens/add-product.png';
+
+const rows = [
+  {
+    eyebrow: 'Dashboard',
+    title: 'Your shop at a glance',
+    body: 'Open the app and see how many listings are live, which chats are waiting, your rating and how many people follow you.',
+    points: ['Live listings, unread chats, rating and followers', 'Recent products with a live/hidden switch', '“View as customer” to see your shop the way buyers do'],
+    screen: dashboard,
+    alt: 'Dashboard showing 4 live products, 0 unread chats, a 4.3 rating and 7 followers',
+  },
+  {
+    eyebrow: 'Listings',
+    title: 'Add a product in a minute',
+    body: 'Take photos with your phone, add a price and a short description, and submit. We compress the photos so they load fast for customers.',
+    points: ['5 to 7 photos, the first one is the cover', 'Negotiable or fixed price', 'Pick a category so buyers can find it'],
+    screen: addProduct,
+    alt: 'Add product form with photos, name, category, price and description',
+  },
+  {
+    eyebrow: 'Inventory',
+    title: 'Keep your stock up to date',
+    body: 'Sold the last one? Switch the listing off. Back in stock? Switch it on again. Your plan limit is always shown, so there are no surprises.',
+    points: ['One-tap live or hidden', 'Filter by live, hidden or awaiting approval', 'Edit price and details at any time'],
+    screen: products,
+    alt: 'My products screen showing 4 of 20 active listings with toggles',
+  },
+];
+---
+
+<section class="section tools" aria-labelledby="tools-title">
+  <div class="container">
+    <SectionHeading
+      id="tools-title"
+      eyebrow="Built for shopkeepers"
+      title="Simple tools that <em>fit in your pocket</em>"
+      lead="No laptop or website needed. If you can use WhatsApp, you can run your Tech Plaza shop."
+    />
+
+    <div class="tools__rows">
+      {
+        rows.map((row, i) => (
+          <article class:list={['row', { 'row--flip': i % 2 === 1 }]}>
+            <div class="row__visual" data-reveal="scale">
+              <PhoneFrame src={row.screen} alt={row.alt} width={280} />
+            </div>
+            <div class="row__copy" data-reveal style="--reveal-i:1">
+              <p class="eyebrow">{row.eyebrow}</p>
+              <h3>{row.title}</h3>
+              <p class="row__body">{row.body}</p>
+              <ul role="list">
+                {row.points.map((p) => (
+                  <li>
+                    <span class="row__check">
+                      <Icon name="check" size={14} strokeWidth={2.5} />
+                    </span>
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .tools__rows {
+    display: grid;
+    gap: clamp(4rem, 2rem + 6vw, 7rem);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+  }
+
+  .row--flip .row__visual {
+    order: 1;
+  }
+
+  .row__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  .row__visual::before {
+    content: '';
+    position: absolute;
+    width: min(420px, 90%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--brand-tint-2), transparent 68%);
+  }
+
+  .row__visual :global(.phone) {
+    width: min(280px, 70vw);
+  }
+
+  .row__copy {
+    display: grid;
+    gap: 1rem;
+    max-width: 30rem;
+  }
+
+  .row__copy h3 {
+    font-size: var(--fs-xl);
+  }
+
+  .row__body {
+    color: var(--text-2);
+  }
+
+  .row__copy ul {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .row__copy li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    font-size: var(--fs-sm);
+    font-weight: 500;
+  }
+
+  .row__check {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--success-bg);
+    color: var(--success);
+  }
+
+  @media (max-width: 859px) {
+    .row {
+      grid-template-columns: 1fr;
+    }
+
+    .row--flip .row__visual {
+      order: 0;
+    }
+
+    .row__copy {
+      margin-inline: auto;
+    }
+  }
+</style>

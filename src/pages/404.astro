@@ -1,0 +1,33 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/layout/PageHeader.astro';
+import Button from '@/components/ui/Button.astro';
+---
+
+<BaseLayout title="Page not found" noindex>
+  <PageHeader
+    eyebrow="Error 404"
+    title="This shop seems to have <em>moved.</em>"
+    lead="We couldn’t find the page you were looking for. It may have been renamed, or the link may be wrong."
+  >
+    <div class="nf-actions" data-reveal style="--reveal-i:3">
+      <Button href="/" icon="arrow-right">Back to home</Button>
+      <Button href="/help" variant="secondary">Help centre</Button>
+    </div>
+  </PageHeader>
+  <div class="nf-space"></div>
+</BaseLayout>
+
+<style>
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .nf-space {
+    height: clamp(4rem, 2rem + 8vw, 10rem);
+  }
+</style>

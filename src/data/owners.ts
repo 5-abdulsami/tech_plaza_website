@@ -51,4 +51,4 @@ export const plans: Plan[] = [
 ];
 
 /** Payment methods accepted when paid plans are switched on. */
-export const paymentMethods = ['Easypaisa', 'JazzCash', 'Bank transfer'];
+export const paymentMethods = ['Easypaisa', 'JazzCash', 'bank transfer'];

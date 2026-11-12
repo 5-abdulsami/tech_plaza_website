@@ -1,0 +1,62 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  /** Small line under the lead, e.g. "Last updated …". */
+  meta?: string;
+}
+
+const { eyebrow, title, lead, meta } = Astro.props;
+---
+
+<section class="page-header">
+  <div class="page-header__bg" aria-hidden="true"></div>
+  <div class="container-narrow page-header__inner">
+    {eyebrow && <p class="eyebrow" data-reveal>{eyebrow}</p>}
+    <h1 class="page-header__title" data-reveal style="--reveal-i:1" set:html={title} />
+    {lead && <p class="lead" data-reveal style="--reveal-i:2">{lead}</p>}
+    {meta && <p class="page-header__meta" data-reveal style="--reveal-i:3">{meta}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-header {
+    position: relative;
+    margin-top: calc(var(--header-h) * -1);
+    padding: calc(var(--header-h) + clamp(3rem, 2rem + 4vw, 5.5rem)) 0 clamp(3rem, 2rem + 3vw, 4.5rem);
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .page-header__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(50rem 26rem at 50% -10%, rgb(17 30 115 / 0.1), transparent 70%),
+      linear-gradient(180deg, #fff, var(--bg));
+  }
+
+  .page-header__inner {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+  }
+
+  .page-header__title {
+    font-size: var(--fs-3xl);
+    letter-spacing: -0.04em;
+  }
+
+  .page-header__title :global(em) {
+    font-style: normal;
+    color: var(--brand);
+  }
+
+  .page-header__meta {
+    font-size: var(--fs-xs);
+    color: var(--text-3);
+  }
+</style>

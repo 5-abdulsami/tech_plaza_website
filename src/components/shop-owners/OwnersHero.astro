@@ -1,0 +1,225 @@
+---
+import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import StoreButton from '@/components/ui/StoreButton.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import dashboard from '@/assets/screens/owner-dashboard.png';
+import shop from '@/assets/screens/shop-profile.png';
+import { site } from '@/config/site';
+
+const stats = [
+  { value: 'Rs 0', label: 'to list during launch' },
+  { value: '10', label: 'live listings included' },
+  { value: '5–7', label: 'photos per product' },
+];
+---
+
+<section class="ohero" aria-labelledby="ohero-title">
+  <div class="ohero__bg" aria-hidden="true"></div>
+  <div class="container ohero__grid">
+    <div class="ohero__copy">
+      <p class="eyebrow" data-reveal><Icon name="store" size={16} /> For shop owners</p>
+      <h1 id="ohero-title" class="ohero__title" data-reveal style="--reveal-i:1">
+        Put your shop in every customer’s <span>pocket.</span>
+      </h1>
+      <p class="lead" data-reveal style="--reveal-i:2">
+        Tech Plaza gives your plaza shop a storefront customers can browse from home. They see your products and
+        prices, message you with questions, and walk in ready to buy.
+      </p>
+      <div class="ohero__actions" data-reveal style="--reveal-i:3">
+        <StoreButton />
+        <Button
+          href={`mailto:${site.contact.email}?subject=List%20my%20shop%20on%20Tech%20Plaza`}
+          variant="secondary"
+          size="lg"
+          iconStart="mail"
+        >
+          Talk to us
+        </Button>
+      </div>
+      <dl class="ohero__stats" data-reveal style="--reveal-i:4">
+        {
+          stats.map((s) => (
+            <div>
+              <dt>{s.label}</dt>
+              <dd>{s.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <div class="ohero__visual" data-reveal="scale" style="--reveal-i:2">
+      <PhoneFrame src={shop} alt="A shop page as customers see it" width={260} eager class="ohero__phone ohero__phone--back" />
+      <PhoneFrame src={dashboard} alt="Shop owner dashboard" width={290} eager class="ohero__phone ohero__phone--front" />
+      <div class="ohero__badge" aria-hidden="true">
+        <Icon name="badge-check" size={18} />
+        Shop approved
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ohero {
+    position: relative;
+    margin-top: calc(var(--header-h) * -1);
+    padding: calc(var(--header-h) + clamp(2.5rem, 1rem + 5vw, 5rem)) 0 clamp(4rem, 2rem + 5vw, 6.5rem);
+    overflow: hidden;
+  }
+
+  .ohero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(50rem 34rem at 90% 0%, rgb(245 158 11 / 0.12), transparent 60%),
+      radial-gradient(50rem 34rem at 0% 30%, rgb(17 30 115 / 0.08), transparent 60%),
+      linear-gradient(180deg, #fff, var(--bg));
+  }
+
+  .ohero__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+  }
+
+  .ohero__copy {
+    display: grid;
+    justify-items: start;
+    gap: 1.4rem;
+  }
+
+  .ohero__title {
+    font-size: var(--fs-3xl);
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .ohero__title span {
+    color: var(--accent);
+  }
+
+  .ohero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+  }
+
+  .ohero__stats {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 2.5rem;
+    margin-top: 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .ohero__stats div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.2rem;
+  }
+
+  .ohero__stats dd {
+    margin: 0;
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--brand);
+  }
+
+  .ohero__stats dt {
+    font-size: var(--fs-xs);
+    color: var(--text-3);
+  }
+
+  .ohero__visual {
+    position: relative;
+    width: min(100%, 460px);
+    aspect-ratio: 1 / 1.08;
+    margin-inline: auto;
+  }
+
+  .ohero__visual :global(.ohero__phone) {
+    position: absolute;
+  }
+
+  .ohero__visual :global(.ohero__phone--front) {
+    width: 56%;
+    left: 4%;
+    top: 0;
+    z-index: 1;
+    animation: ofloat 7s var(--ease-in-out) infinite;
+  }
+
+  .ohero__visual :global(.ohero__phone--back) {
+    width: 50%;
+    right: 2%;
+    top: 9%;
+    rotate: 6deg;
+    animation: ofloat 7s var(--ease-in-out) -3.5s infinite;
+  }
+
+  .ohero__badge {
+    position: absolute;
+    z-index: 2;
+    right: 6%;
+    bottom: 8%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 18px 40px -16px rgb(15 23 42 / 0.35);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--success);
+    animation: ofloat 6s var(--ease-in-out) -2s infinite;
+  }
+
+  @keyframes ofloat {
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  @media (max-width: 959px) {
+    .ohero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ohero__copy {
+      justify-items: center;
+      text-align: center;
+    }
+
+    .ohero__actions {
+      justify-content: center;
+    }
+
+    .ohero__visual {
+      width: min(100%, 400px);
+    }
+  }
+
+  @media (max-width: 479px) {
+    .ohero__actions {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .ohero__stats {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .ohero__stats dd {
+      font-size: 1.25rem;
+    }
+  }
+</style>
