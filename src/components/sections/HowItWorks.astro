@@ -1,0 +1,340 @@
+---
+import { Image } from 'astro:assets';
+import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { journey } from '@/data/journey';
+---
+
+<section id="how-it-works" class="section how" aria-labelledby="how-title">
+  <div class="container">
+    <SectionHeading
+      id="how-title"
+      eyebrow="How it works"
+      title="From search to shop counter in <em>four steps</em>"
+      lead="Tech Plaza doesn’t sell anything itself. It gets you to the right shop, already knowing the price."
+    />
+
+    <div class="how__grid" data-journey>
+      <div class="how__steps" role="tablist" aria-label="Steps" aria-orientation="vertical" data-reveal>
+        {
+          journey.map((step, i) => (
+            <button
+              class="step"
+              type="button"
+              role="tab"
+              id={`step-tab-${i}`}
+              aria-controls="journey-screen"
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              data-step={i}
+            >
+              <span class="step__num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="step__body">
+                <span class="step__title">
+                  <Icon name={step.icon} size={18} />
+                  {step.title}
+                </span>
+                <span class="step__text">
+                  <span>{step.body}</span>
+                </span>
+              </span>
+              <span class="step__progress" aria-hidden="true" />
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="how__visual" data-reveal="scale" style="--reveal-i:1">
+        <div class="how__halo" aria-hidden="true"></div>
+        <PhoneFrame class="how__phone">
+          <div id="journey-screen" role="tabpanel" aria-labelledby="step-tab-0" class="how__screens" data-screens>
+            {
+              journey.map((step, i) => (
+                <Image
+                  src={step.screen}
+                  alt={step.alt}
+                  widths={[320, 640]}
+                  sizes="320px"
+                  format="webp"
+                  quality={82}
+                  class:list={['how__screen', { 'is-active': i === 0 }]}
+                  data-screen={i}
+                />
+              ))
+            }
+          </div>
+        </PhoneFrame>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const INTERVAL = 5500;
+
+  document.querySelectorAll<HTMLElement>('[data-journey]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-step]')];
+    const screens = [...root.querySelectorAll<HTMLElement>('[data-screen]')];
+    const panel = root.querySelector<HTMLElement>('[data-screens]');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let index = 0;
+    let timer: number | undefined;
+    let stopped = reduced; // autoplay stops for good once the visitor picks a step
+    let hovering = false;
+    let visible = false;
+
+    const clear = () => {
+      window.clearTimeout(timer);
+      tabs[index].classList.remove('is-running');
+    };
+
+    const schedule = () => {
+      clear();
+      if (stopped || hovering || !visible) return;
+      const tab = tabs[index];
+      void tab.offsetWidth; // restart the progress bar animation
+      tab.classList.add('is-running');
+      timer = window.setTimeout(() => select(index + 1), INTERVAL);
+    };
+
+    const select = (next: number, focus = false) => {
+      clear();
+      index = (next + tabs.length) % tabs.length;
+      tabs.forEach((tab, i) => {
+        const on = i === index;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+      });
+      screens.forEach((s, i) => s.classList.toggle('is-active', i === index));
+      panel?.setAttribute('aria-labelledby', tabs[index].id);
+      if (focus) tabs[index].focus();
+      schedule();
+    };
+
+    const stop = () => {
+      stopped = true;
+      root.classList.add('is-stopped');
+    };
+
+    const keyMoves: Record<string, number> = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        stop();
+        select(i);
+      });
+      tab.addEventListener('keydown', (e) => {
+        if (e.key in keyMoves) {
+          e.preventDefault();
+          stop();
+          select(index + keyMoves[e.key], true);
+        } else if (e.key === 'Home' || e.key === 'End') {
+          e.preventDefault();
+          stop();
+          select(e.key === 'Home' ? 0 : tabs.length - 1, true);
+        }
+      });
+    });
+
+    root.addEventListener('mouseenter', () => {
+      hovering = true;
+      clear();
+    });
+    root.addEventListener('mouseleave', () => {
+      hovering = false;
+      schedule();
+    });
+
+    new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) schedule();
+        else clear();
+      },
+      { threshold: 0.35 },
+    ).observe(root);
+  });
+</script>
+
+<style>
+  .how {
+    background: var(--surface);
+    border-block: 1px solid var(--border);
+  }
+
+  .how__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+  }
+
+  .how__steps {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .step {
+    position: relative;
+    display: flex;
+    gap: 1.25rem;
+    width: 100%;
+    padding: 1.4rem 1.5rem;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid transparent;
+    text-align: left;
+    transition:
+      background-color 0.35s var(--ease),
+      border-color 0.35s var(--ease),
+      box-shadow 0.35s var(--ease);
+  }
+
+  .step:hover {
+    background: var(--slate-50);
+  }
+
+  .step[aria-selected='true'] {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .step__num {
+    flex: none;
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--slate-300);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.35s var(--ease);
+  }
+
+  .step[aria-selected='true'] .step__num {
+    color: var(--accent);
+  }
+
+  .step__body {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .step__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-2);
+    transition: color 0.35s var(--ease);
+  }
+
+  .step[aria-selected='true'] .step__title {
+    color: var(--brand);
+  }
+
+  .step__text {
+    display: grid;
+    grid-template-rows: 0fr;
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+    opacity: 0;
+    transition:
+      grid-template-rows 0.45s var(--ease),
+      opacity 0.45s var(--ease),
+      margin 0.45s var(--ease);
+  }
+
+  .step__text > span {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .step[aria-selected='true'] .step__text {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 0.25rem;
+  }
+
+  .step__progress {
+    position: absolute;
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .step.is-running .step__progress {
+    animation: progress 5.5s linear forwards;
+  }
+
+  .is-stopped .step__progress {
+    display: none;
+  }
+
+  /* Visual */
+  .how__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding-block: 1rem;
+  }
+
+  .how__halo {
+    position: absolute;
+    width: 82%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, var(--brand-tint-2) 0 45%, transparent 46%),
+      radial-gradient(circle, transparent 0 58%, var(--brand-tint) 59% 60%, transparent 61%),
+      radial-gradient(circle, transparent 0 70%, var(--slate-100) 71% 72%, transparent 73%);
+  }
+
+  .how__visual :global(.how__phone) {
+    position: relative;
+    width: min(300px, 72vw);
+  }
+
+  .how__screens {
+    position: absolute;
+    inset: 0;
+  }
+
+  .how__screens :global(.how__screen) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.04);
+    transition:
+      opacity 0.6s var(--ease),
+      transform 0.9s var(--ease);
+  }
+
+  .how__screens :global(.how__screen.is-active) {
+    opacity: 1;
+    transform: none;
+  }
+
+  @keyframes progress {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (max-width: 899px) {
+    .how__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .how__visual {
+      order: -1;
+    }
+  }
+</style>

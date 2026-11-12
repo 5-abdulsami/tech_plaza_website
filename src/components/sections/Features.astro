@@ -1,0 +1,122 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import FeatureCard from '@/components/ui/FeatureCard.astro';
+import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import { customerFeatures } from '@/data/features';
+import plazaPicker from '@/assets/screens/plaza-picker.png';
+import favorites from '@/assets/screens/favorites.png';
+import chatList from '@/assets/screens/chat-list.png';
+
+const showcase = [
+  { src: plazaPicker, title: 'Choose your plaza', alt: 'Plaza picker listing Rawalpindi tech plazas' },
+  { src: favorites, title: 'Keep a shortlist', alt: 'Favourites screen with two saved products' },
+  { src: chatList, title: 'All your chats', alt: 'Chat list with a conversation with Laptop Point' },
+];
+---
+
+<section id="features" class="section features" aria-labelledby="features-title">
+  <div class="container">
+    <SectionHeading
+      id="features-title"
+      eyebrow="For customers"
+      title="Everything you need to <em>shop smarter</em>"
+      lead="Built for how people in Pakistan actually buy electronics: see it, ask about it, bargain if you like, then pick it up in person."
+    />
+
+    <div class="features__showcase">
+      {
+        showcase.map((item, i) => (
+          <figure class="shot" data-reveal style={`--reveal-i:${i}`}>
+            <PhoneFrame src={item.src} alt={item.alt} width={240} />
+            <figcaption>{item.title}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="features__grid">
+      {customerFeatures.map((f, i) => <FeatureCard {...f} index={i} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .features__showcase {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 240px));
+    justify-content: center;
+    gap: clamp(1.25rem, 0.5rem + 4vw, 4rem);
+    margin-bottom: clamp(3rem, 2rem + 4vw, 5rem);
+  }
+
+  .shot {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+  }
+
+  .shot:nth-child(2) {
+    translate: 0 -1.5rem;
+  }
+
+  .shot :global(.phone) {
+    transition: transform 0.6s var(--ease);
+  }
+
+  .shot:hover :global(.phone) {
+    transform: translateY(-8px) rotate(-1deg);
+  }
+
+  .shot figcaption {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-2);
+  }
+
+  .features__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 1023px) {
+    .features__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 767px) {
+    /* Swipeable row of phones on small screens. */
+    .features__showcase {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 62%;
+      justify-content: start;
+      gap: 1rem;
+      margin-inline: calc(var(--gutter) * -1);
+      padding: 0.5rem var(--gutter) 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+
+    .features__showcase::-webkit-scrollbar {
+      display: none;
+    }
+
+    .shot {
+      scroll-snap-align: start;
+    }
+
+    .shot:nth-child(2) {
+      translate: none;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .features__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

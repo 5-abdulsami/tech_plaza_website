@@ -9,7 +9,7 @@ interface Props {
 const { tone = 'dark', class: className } = Astro.props;
 const url = site.app.playStoreUrl;
 const Tag = url ? 'a' : 'div';
-const linkProps = url
+const linkProps: Record<string, string> = url
   ? { href: url, target: '_blank', rel: 'noopener noreferrer', 'aria-label': 'Get Tech Plaza on Google Play' }
   : { role: 'note', 'aria-label': 'Tech Plaza is coming soon to Google Play' };
 ---

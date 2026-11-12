@@ -1,0 +1,167 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import { ownerFeatures } from '@/data/features';
+import dashboard from '@/assets/screens/owner-dashboard.png';
+import products from '@/assets/screens/owner-products.png';
+---
+
+<section class="section owners" aria-labelledby="owners-title">
+  <div class="owners__bg" aria-hidden="true"></div>
+  <div class="container owners__grid">
+    <div class="owners__visual" data-reveal="scale">
+      <PhoneFrame src={products} alt="My products screen showing 4 of 20 active listings" width={260} class="owners__phone owners__phone--back" />
+      <PhoneFrame src={dashboard} alt="Shop owner dashboard with live listings, unread chats, rating and followers" width={280} class="owners__phone owners__phone--front" />
+    </div>
+
+    <div class="owners__copy">
+      <SectionHeading
+        id="owners-title"
+        eyebrow="For shop owners"
+        title="Your shop, open to customers <em>around the clock</em>"
+        lead="Customers are already searching on their phones. Give them a storefront they can browse at midnight and a chat they can use before they walk in."
+        align="start"
+        tone="inverse"
+      />
+
+      <ul role="list" class="owners__list">
+        {
+          ownerFeatures.map((f, i) => (
+            <li data-reveal style={`--reveal-i:${i % 3}`}>
+              <span class="owners__icon">
+                <Icon name={f.icon} size={18} />
+              </span>
+              <span>
+                <strong>{f.title}</strong>
+                {f.body}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="owners__actions" data-reveal>
+        <Button href="/shop-owners" variant="accent" size="lg" icon="arrow-right">List your shop for free</Button>
+        <Button href="/shop-owners#onboarding" variant="outline-light" size="lg">How approval works</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .owners {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    background: var(--brand-900);
+  }
+
+  .owners__bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(50rem 30rem at 0% 0%, rgb(59 79 209 / 0.35), transparent 60%),
+      radial-gradient(40rem 30rem at 100% 100%, rgb(18 50 78 / 0.9), transparent 70%),
+      linear-gradient(160deg, var(--brand), var(--brand-900));
+  }
+
+  .owners__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(2.5rem, 1rem + 5vw, 6rem);
+    align-items: center;
+  }
+
+  .owners__visual {
+    position: relative;
+    width: min(100%, 440px);
+    aspect-ratio: 1 / 1.12;
+    margin-inline: auto;
+  }
+
+  .owners__visual :global(.owners__phone) {
+    position: absolute;
+  }
+
+  .owners__visual :global(.owners__phone--front) {
+    width: 58%;
+    left: 0;
+    top: 4%;
+    z-index: 1;
+  }
+
+  .owners__visual :global(.owners__phone--back) {
+    width: 52%;
+    right: 0;
+    top: 12%;
+    rotate: 5deg;
+    opacity: 0.9;
+  }
+
+  .owners__copy :global(.heading) {
+    margin-bottom: 2rem;
+  }
+
+  .owners__list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .owners__list li {
+    display: flex;
+    gap: 0.875rem;
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+    color: rgb(255 255 255 / 0.68);
+  }
+
+  .owners__list strong {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .owners__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    background: rgb(245 158 11 / 0.14);
+    color: var(--accent);
+  }
+
+  .owners__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+  }
+
+  @media (max-width: 959px) {
+    .owners__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .owners__visual {
+      order: 1;
+      width: min(100%, 380px);
+    }
+  }
+
+  @media (max-width: 559px) {
+    .owners__list {
+      grid-template-columns: 1fr;
+    }
+
+    .owners__actions {
+      flex-direction: column;
+    }
+  }
+</style>

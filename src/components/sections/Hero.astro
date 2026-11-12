@@ -1,0 +1,396 @@
+---
+import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import StoreButton from '@/components/ui/StoreButton.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import home from '@/assets/screens/customer-home.png';
+import product from '@/assets/screens/product-detail.png';
+
+const perks = [
+  { icon: 'eye', label: 'Browse without an account' },
+  { icon: 'badge-check', label: 'Verified shops' },
+  { icon: 'zap', label: 'Free for customers' },
+] as const;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__bg" aria-hidden="true"></div>
+
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="hero__pill" data-reveal>
+        <span class="hero__dot"></span>
+        Starting with Dubai Plaza, Rawalpindi
+      </p>
+
+      <h1 id="hero-title" class="hero__title" data-reveal style="--reveal-i:1">
+        Discover tech <span class="hero__accent">near you.</span>
+      </h1>
+
+      <p class="lead hero__lead" data-reveal style="--reveal-i:2">
+        Every electronics shop in Rawalpindi’s tech plazas, on your phone. Compare phones, laptops and
+        accessories, then chat with the shop before you make the trip.
+      </p>
+
+      <div class="hero__actions" data-reveal style="--reveal-i:3">
+        <StoreButton />
+        <Button href="/shop-owners" variant="secondary" size="lg" icon="arrow-right">List your shop</Button>
+      </div>
+
+      <ul class="hero__perks" role="list" data-reveal style="--reveal-i:4">
+        {
+          perks.map((p) => (
+            <li>
+              <Icon name={p.icon} size={18} />
+              {p.label}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="hero__visual" data-reveal="scale" style="--reveal-i:2">
+      <div class="hero__glow" aria-hidden="true"></div>
+      <PhoneFrame src={product} alt="Product page in the Tech Plaza app" width={280} eager class="hero__phone hero__phone--back" />
+      <PhoneFrame
+        src={home}
+        alt="Tech Plaza home screen listing products from local shops"
+        width={300}
+        eager
+        class="hero__phone hero__phone--front"
+      />
+
+      <div class="chip chip--chat" aria-hidden="true">
+        <span class="chip__avatar"><Icon name="store" size={16} /></span>
+        <span>
+          <strong>Laptop Point</strong>
+          <small>Yes, it’s available</small>
+        </span>
+      </div>
+
+      <div class="chip chip--price" aria-hidden="true">
+        <strong>Rs 75,000</strong>
+        <span class="chip__tag">Negotiable</span>
+      </div>
+
+      <div class="chip chip--rating" aria-hidden="true">
+        <Icon name="star" size={16} class="chip__star" />
+        <strong>4.3</strong>
+        <small>7 ratings</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    margin-top: calc(var(--header-h) * -1);
+    padding-top: calc(var(--header-h) + clamp(2.5rem, 1rem + 5vw, 5rem));
+    padding-bottom: clamp(4rem, 2rem + 6vw, 7rem);
+    overflow: hidden;
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60rem 40rem at 85% 10%, rgb(17 30 115 / 0.1), transparent 60%),
+      radial-gradient(40rem 30rem at 10% 90%, rgb(245 158 11 / 0.08), transparent 60%),
+      linear-gradient(180deg, #fff, var(--bg));
+  }
+
+  .hero__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgb(17 30 115 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(17 30 115 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 60% at 60% 30%, #000 20%, transparent 75%);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+  }
+
+  .hero__copy {
+    display: grid;
+    justify-items: start;
+    gap: 1.5rem;
+  }
+
+  .hero__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--text-2);
+  }
+
+  .hero__dot {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .hero__dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: ping 2s var(--ease) infinite;
+  }
+
+  .hero__title {
+    font-size: var(--fs-3xl);
+    letter-spacing: -0.04em;
+    line-height: 1.04;
+  }
+
+  .hero__accent {
+    color: var(--brand);
+    background: linear-gradient(100deg, var(--brand) 20%, #3b4fd1 60%, var(--brand) 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 6s var(--ease-in-out) infinite;
+  }
+
+  .hero__lead {
+    max-width: 34rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  .hero__perks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 0.75rem;
+    font-size: var(--fs-sm);
+    color: var(--text-2);
+  }
+
+  .hero__perks li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hero__perks :global(svg) {
+    color: var(--success);
+  }
+
+  /* Visual */
+  .hero__visual {
+    position: relative;
+    width: min(100%, 480px);
+    aspect-ratio: 1 / 1.08;
+    margin-inline: auto;
+  }
+
+  .hero__glow {
+    position: absolute;
+    inset: 12% 8%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(17 30 115 / 0.28), transparent 65%);
+    filter: blur(30px);
+  }
+
+  .hero__visual :global(.hero__phone) {
+    position: absolute;
+  }
+
+  .hero__visual :global(.hero__phone--front) {
+    width: 56%;
+    left: 6%;
+    top: 0;
+    animation: float 7s var(--ease-in-out) infinite;
+  }
+
+  .hero__visual :global(.hero__phone--back) {
+    width: 50%;
+    right: 2%;
+    top: 9%;
+    rotate: 6deg;
+    opacity: 0.96;
+    animation: float 7s var(--ease-in-out) -3.5s infinite;
+  }
+
+  .chip {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.7rem 0.95rem;
+    border-radius: 16px;
+    background: rgb(255 255 255 / 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgb(255 255 255 / 0.8);
+    box-shadow: 0 18px 40px -16px rgb(15 23 42 / 0.35);
+    font-size: 0.8125rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    animation: float 6s var(--ease-in-out) infinite;
+  }
+
+  .chip strong {
+    display: block;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .chip small {
+    display: block;
+    color: var(--text-3);
+    font-size: 0.75rem;
+  }
+
+  .chip--chat {
+    left: -4%;
+    bottom: 16%;
+    animation-delay: -1s;
+  }
+
+  .chip__avatar {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+  }
+
+  .chip--price {
+    right: -2%;
+    top: 4%;
+    animation-delay: -2.5s;
+  }
+
+  .chip--price strong {
+    color: var(--brand);
+    font-size: 1rem;
+  }
+
+  .chip__tag {
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    background: var(--success-bg);
+    color: var(--success);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  .chip--rating {
+    right: 4%;
+    bottom: 6%;
+    gap: 0.375rem;
+    animation-delay: -4s;
+  }
+
+  .chip--rating :global(.chip__star) {
+    color: var(--star);
+    fill: var(--star);
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    80%,
+    100% {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+
+  @keyframes shine {
+    0%,
+    100% {
+      background-position: 100% 0;
+    }
+    50% {
+      background-position: 0 0;
+    }
+  }
+
+  @media (max-width: 959px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__copy {
+      justify-items: center;
+      text-align: center;
+    }
+
+    .hero__actions,
+    .hero__perks {
+      justify-content: center;
+    }
+
+    .hero__visual {
+      width: min(100%, 420px);
+    }
+  }
+
+  @media (max-width: 479px) {
+    .hero__actions {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .hero__actions > :global(*) {
+      justify-content: center;
+    }
+
+    .chip {
+      padding: 0.55rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .chip--chat {
+      left: 0;
+    }
+
+    .chip--price {
+      right: 0;
+    }
+  }
+</style>

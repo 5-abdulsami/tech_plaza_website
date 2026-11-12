@@ -1,0 +1,156 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import FeatureCard from '@/components/ui/FeatureCard.astro';
+import { trustPoints } from '@/data/features';
+
+const flow = ['Shop applies', 'CNIC checked', 'Shop approved', 'Product reviewed', 'Live for customers'];
+---
+
+<section id="trust" class="section trust" aria-labelledby="trust-title">
+  <div class="container">
+    <SectionHeading
+      id="trust-title"
+      eyebrow="Trust & safety"
+      title="Real shops. <em>Reviewed listings.</em>"
+      lead="Nothing appears in the app until a person on our team has looked at it."
+    />
+
+    <ol class="trust__flow" role="list" data-reveal aria-label="Review process">
+      {
+        flow.map((label, i) => (
+          <li style={`--i:${i}`}>
+            <span class="trust__dot">{i + 1}</span>
+            <span>{label}</span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="trust__grid">
+      {trustPoints.map((p, i) => <FeatureCard {...p} index={i} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .trust {
+    background: var(--surface);
+    border-block: 1px solid var(--border);
+  }
+
+  .trust__flow {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    max-width: 920px;
+    margin: 0 auto clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+
+  .trust__flow::before {
+    content: '';
+    position: absolute;
+    top: 19px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(to right, var(--brand-tint-2), var(--brand), var(--success));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.6s var(--ease) 0.2s;
+  }
+
+  .trust__flow.is-visible::before,
+  :global(html:not(.js)) .trust__flow::before {
+    transform: none;
+  }
+
+  .trust__flow li {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--text-2);
+  }
+
+  .trust__dot {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--brand);
+    color: var(--brand);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    transform: scale(0.6);
+    opacity: 0;
+    transition:
+      transform 0.6s var(--ease),
+      opacity 0.6s var(--ease);
+    transition-delay: calc(var(--i) * 0.28s + 0.2s);
+  }
+
+  .trust__flow.is-visible .trust__dot,
+  :global(html:not(.js)) .trust__dot {
+    transform: none;
+    opacity: 1;
+  }
+
+  .trust__flow li:last-child .trust__dot {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+  }
+
+  .trust__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 1023px) {
+    .trust__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 639px) {
+    .trust__flow {
+      grid-template-columns: 1fr;
+      justify-items: start;
+      gap: 1rem;
+      max-width: 20rem;
+    }
+
+    .trust__flow::before {
+      top: 10%;
+      bottom: 10%;
+      left: 19px;
+      right: auto;
+      width: 2px;
+      height: auto;
+      transform: scaleY(0);
+      transform-origin: top;
+      background: linear-gradient(to bottom, var(--brand-tint-2), var(--brand), var(--success));
+    }
+
+    .trust__flow li {
+      grid-auto-flow: column;
+      justify-items: start;
+      align-items: center;
+      gap: 1rem;
+      text-align: left;
+      font-size: var(--fs-sm);
+    }
+  }
+
+  @media (max-width: 479px) {
+    .trust__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
