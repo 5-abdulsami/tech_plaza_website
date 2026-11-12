@@ -1,0 +1,17 @@
+{
+  "name": "tech_plaza_website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Marketing and legal website for Tech Plaza, served at techplaza.app",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "images": "node scripts/optimize-images.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
