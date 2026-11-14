@@ -60,9 +60,15 @@ Tech Plaza is free for customers and for shops. If that ever changes, we will te
 - You keep ownership of the content you upload (such as photos and descriptions). You give us permission to display, store, resize and compress it so we can run and promote the Service.
 - Don’t upload content you don’t have the right to use.
 
+## Reporting and blocking
+
+- If a user, shop or product breaks these Terms, report it in the app: use **Report** in the chat menu, or the **⋮** menu on a shop or product page. Reports are private: the other person isn’t told who reported them.
+- You can **block** anyone you chat with from the chat menu. Neither of you can then message the other. Unblock any time from the chat or **Settings → Blocked users**.
+- We review every report. We may remove content, suspend a shop or delete an account, and we tell the person who reported it once it has been reviewed.
+
 ## Suspension and termination
 
-We may hide content, suspend or close an account if someone breaks these Terms, puts other users at risk, or if the law requires it. Where we can, we will tell you why. You can stop using Tech Plaza and [delete your account](/delete-account) at any time.
+We may hide content, suspend or close an account if someone breaks these Terms, puts other users at risk, or if the law requires it. Where we can, we will tell you why. You can stop using Tech Plaza and [delete your account](/delete-account) at any time, in the app under **Settings → Delete account**. Shop owners can also delete only their shop under **Settings → Delete shop**.
 
 ## Disclaimers
 

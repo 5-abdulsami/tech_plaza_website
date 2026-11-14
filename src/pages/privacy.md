@@ -14,7 +14,7 @@ This policy explains how Tech Plaza ("Tech Plaza", "we", "us") handles personal 
 - Shop owners give us a **CNIC number and CNIC image** so we can verify them. These are stored privately and seen only by the shop owner and our admin team.
 - Other users **can't see your email address or phone number**.
 - We **don't sell your data** and we don't show ads.
-- You can ask us to delete your account at any time. See [Delete your account](/delete-account).
+- You can delete your account at any time in the app (**Settings → Delete account**). See [Delete your account](/delete-account).
 
 ## Information we collect
 
@@ -27,6 +27,7 @@ This policy explains how Tech Plaza ("Tech Plaza", "we", "us") handles personal 
 | Shop owners | Phone number, CNIC number, CNIC image | To verify your identity and make sure one person runs one active shop |
 | Shop owners | Shop name, plaza, address, description, logo, phone number, product listings and photos | To publish your shop to customers |
 | Anyone who chats | Messages you send and receive, and the product each chat is about | To deliver messages between customers and shops |
+| Anyone who reports or blocks | Who you blocked; the reports you send (reason, your description, what you reported) | To keep blocked people from contacting you and to review reports |
 
 ### Information collected automatically
 
@@ -47,7 +48,7 @@ We use your information to:
 - show shops and products to customers, and let customers contact shops;
 - verify shop owners and review shops and products before they go live;
 - send notifications you’ve allowed, and important messages about your account;
-- keep the Service safe, including detecting fake ratings, spam and fraud;
+- keep the Service safe, including detecting fake ratings, spam and fraud, and reviewing reports;
 - respond to your questions and support requests;
 - meet our legal obligations.
 
@@ -60,6 +61,8 @@ We don’t use your information for advertising and we don’t sell it. We never
 - **Follower lists are private.** Shops, and everyone else, see only how many people follow a shop, not who.
 - **Ratings** are shown as an average and a count, not linked to your name.
 - **Email addresses, phone numbers of customers, and CNIC details** are never shown to other users.
+- **Reports are private.** The person you report isn’t told who reported them. When you report someone from a chat, a copy of the last 30 messages of that chat is attached so our team can review it.
+- **Blocks are private.** The person you block isn’t notified; they only see that they can’t message you.
 
 ## Who we share information with
 
@@ -83,11 +86,10 @@ No system is perfectly secure, but we work to protect your information and will 
 
 ## How long we keep information
 
-We keep your information while your account is open. When you delete your account, we delete or anonymise your personal information within 30 days, except:
+We keep your information while your account is open. When you delete your account in the app, your account, profile, shop, products, photos, CNIC documents, favourites, follows, ratings, blocks and chats (including the messages in them) are deleted straight away. If you ask by email instead, we do it within 30 days. We keep only:
 
-- information we must keep to resolve disputes, prevent fraud or follow the law.
-
-Messages you sent to other users may stay in their chat history.
+- information we must keep to resolve disputes, prevent fraud or follow the law;
+- reports you sent about other users: the report stays with our team, but it’s no longer linked to you.
 
 ## Your choices and rights
 
@@ -97,7 +99,8 @@ You can:
 - **turn off** push notifications at any time;
 - **ask for a copy** of the personal information we hold about you;
 - **ask us to correct** information that is wrong;
-- **delete your account**. See [Delete your account](/delete-account).
+- **block** anyone you chat with, and **report** users, shops or products;
+- **delete your shop** (shop owners) or **your whole account** in the app’s Settings. See [Delete your account](/delete-account).
 
 To make a request, email us from the address linked to your account. We reply within 30 days.
 
