@@ -1,61 +1,121 @@
 ---
+/**
+ * Editorial section heading: a numbered label on a ruled line, a large
+ * left-aligned title, and the lead set beside it on wide screens.
+ * Wrap a word in <span class="mark">…</span> in `title` to give it the amber marker.
+ */
 interface Props {
-  eyebrow?: string;
+  /** Section number, e.g. "01". */
+  index?: string;
+  label?: string;
   title: string;
   lead?: string;
-  align?: 'center' | 'start';
   tone?: 'default' | 'inverse';
-  /** Heading level, so pages keep a correct outline. */
+  /** `split` puts the lead beside the title on wide screens. */
+  layout?: 'split' | 'stack';
   as?: 'h1' | 'h2';
   id?: string;
 }
 
-const { eyebrow, title, lead, align = 'center', tone = 'default', as: Tag = 'h2', id } = Astro.props;
+const {
+  index,
+  label,
+  title,
+  lead,
+  tone = 'default',
+  layout = 'split',
+  as: Tag = 'h2',
+  id,
+} = Astro.props;
 ---
 
-<header class:list={['heading', `heading--${align}`, `heading--${tone}`]} data-reveal>
-  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-  <Tag id={id} class="heading__title" set:html={title} />
-  {lead && <p class="lead heading__lead">{lead}</p>}
+<header class:list={['head', `head--${tone}`, `head--${layout}`, { 'head--solo': !lead }]}>
+  {
+    (index || label) && (
+      <p class="head__rule label" data-reveal="fade">
+        {index && <span class="head__index">{index}</span>}
+        {label && <span>{label}</span>}
+      </p>
+    )
+  }
+  <Tag id={id} class="head__title" data-reveal="wipe" set:html={title} />
+  {lead && <p class="head__lead" data-reveal style="--reveal-i:2">{lead}</p>}
   <slot />
 </header>
 
 <style>
-  .heading {
+  .head {
     display: grid;
-    gap: 1rem;
-    max-width: 44rem;
-    margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+    gap: 1.25rem 3rem;
+    margin-bottom: clamp(2.5rem, 2rem + 2.5vw, 4.5rem);
   }
 
-  .heading--center {
-    margin-inline: auto;
-    text-align: center;
-    justify-items: center;
+  .head__rule {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    grid-column: 1 / -1;
   }
 
-  .heading__title {
-    font-size: var(--fs-2xl);
+  .head__rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
   }
 
-  .heading__title :global(em) {
-    font-style: normal;
+  .head__index {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.2rem;
+    height: 1.6rem;
+    padding: 0 0.4rem;
+    border: 1.5px solid currentColor;
+    border-radius: 4px;
     color: var(--brand);
   }
 
-  .heading--inverse .eyebrow {
+  .head__title {
+    font-size: var(--fs-2xl);
+    max-width: 16ch;
+  }
+
+  .head__lead {
+    max-width: 34rem;
+    font-size: var(--fs-lg);
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  @media (min-width: 900px) {
+    .head--split:not(.head--solo) {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      align-items: end;
+    }
+
+    .head--split .head__lead {
+      justify-self: end;
+    }
+  }
+
+  /* Inverse, for navy sections */
+  .head--inverse .head__rule {
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .head--inverse .head__rule::after {
+    background: var(--rule-inverse);
+  }
+
+  .head--inverse .head__index {
     color: var(--accent);
   }
 
-  .heading--inverse .heading__title {
+  .head--inverse .head__title {
     color: #fff;
   }
 
-  .heading--inverse .heading__title :global(em) {
-    color: var(--accent);
-  }
-
-  .heading--inverse .heading__lead {
-    color: rgb(255 255 255 / 0.72);
+  .head--inverse .head__lead {
+    color: rgb(255 255 255 / 0.7);
   }
 </style>

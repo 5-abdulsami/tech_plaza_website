@@ -1,0 +1,77 @@
+---
+/**
+ * A round verification stamp with text running around the rim.
+ * The rim turns slowly; the centre stays put.
+ */
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+interface Props {
+  text: string;
+  icon?: IconName;
+  size?: number;
+  class?: string;
+}
+
+const { text, icon = 'check', size = 168, class: className } = Astro.props;
+// Deterministic id so builds are reproducible.
+const id = `stamp-${[...text].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, size).toString(36)}`;
+---
+
+<div class:list={['stamp', className]} style={`--size:${size}px`} role="img" aria-label={text.replace(/[•·]/g, ',')}>
+  <svg class="stamp__rim" viewBox="0 0 200 200" aria-hidden="true">
+    <defs>
+      <path id={id} d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"></path>
+    </defs>
+    <circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" stroke-width="2.5"></circle>
+    <circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+    <text>
+      <textPath href={`#${id}`} textLength="460" lengthAdjust="spacing">{text}</textPath>
+    </text>
+  </svg>
+  <span class="stamp__core"><Icon name={icon} size={Math.round(size / 4)} strokeWidth={2.5} /></span>
+</div>
+
+<style>
+  .stamp {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--size);
+    aspect-ratio: 1;
+    color: var(--brand);
+  }
+
+  .stamp__rim {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    animation: spin 26s linear infinite;
+  }
+
+  .stamp__rim text {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: currentColor;
+  }
+
+  .stamp__core {
+    display: grid;
+    place-items: center;
+    width: 50%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--slate-900);
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+</style>

@@ -1,0 +1,149 @@
+---
+/**
+ * An amber hang tag with a punched hole and string, like the price tags on
+ * phones in a plaza display case. It swings gently from the hole.
+ */
+interface Props {
+  eyebrow?: string;
+  value: string;
+  note?: string;
+  tone?: 'accent' | 'paper';
+  size?: 'md' | 'lg';
+  /** Resting angle in degrees. */
+  tilt?: number;
+  class?: string;
+}
+
+const { eyebrow, value, note, tone = 'accent', size = 'md', tilt = -6, class: className } = Astro.props;
+---
+
+<div class:list={['tag', `tag--${tone}`, `tag--${size}`, className]} style={`--tilt:${tilt}deg`}>
+  <span class="tag__string" aria-hidden="true"></span>
+  <div class="tag__body">
+    <span class="tag__hole" aria-hidden="true"></span>
+    {eyebrow && <span class="tag__eyebrow">{eyebrow}</span>}
+    <strong class="tag__value">{value}</strong>
+    {note && <span class="tag__note">{note}</span>}
+  </div>
+</div>
+
+<style>
+  .tag {
+    --tag-bg: var(--accent);
+    --tag-fg: var(--slate-900);
+    position: relative;
+    display: inline-block;
+    padding-top: 26px;
+    transform-origin: 50% 0;
+    rotate: var(--tilt);
+    filter: drop-shadow(0 14px 14px rgb(15 23 42 / 0.22));
+    animation: swing 5s var(--ease-in-out) infinite;
+  }
+
+  .tag--paper {
+    --tag-bg: var(--paper);
+    --tag-fg: var(--slate-900);
+  }
+
+  .tag__string {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1.5px;
+    height: 34px;
+    background: var(--slate-700);
+    translate: -50% 0;
+  }
+
+  .tag__body {
+    position: relative;
+    display: grid;
+    gap: 0.15rem;
+    min-width: 9.5rem;
+    padding: 1.75rem 1.1rem 0.95rem;
+    background: var(--tag-bg);
+    color: var(--tag-fg);
+    /* Classic tag shape: clipped top corners. */
+    clip-path: polygon(22% 0, 78% 0, 100% 14%, 100% 100%, 0 100%, 0 14%);
+    border-radius: 0 0 var(--radius) var(--radius);
+    text-align: center;
+  }
+
+  .tag__hole {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    translate: -50% 0;
+    /* Set --tag-hole to the colour behind the tag. */
+    background: var(--tag-hole, var(--bg));
+    box-shadow: inset 0 0 0 2px rgb(15 23 42 / 0.25);
+  }
+
+  .tag__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .tag__value {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .tag__note {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Large size, for pages where the tag is the main visual */
+  .tag--lg {
+    padding-top: 44px;
+  }
+
+  .tag--lg .tag__string {
+    height: 56px;
+  }
+
+  .tag--lg .tag__body {
+    min-width: 16rem;
+    padding: 2.75rem 1.75rem 1.5rem;
+    gap: 0.35rem;
+  }
+
+  .tag--lg .tag__hole {
+    top: 14px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .tag--lg .tag__eyebrow {
+    font-size: 0.75rem;
+  }
+
+  .tag--lg .tag__value {
+    font-size: clamp(3rem, 2.5rem + 2vw, 4.25rem);
+  }
+
+  .tag--lg .tag__note {
+    font-size: 0.9375rem;
+  }
+
+  @keyframes swing {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(4deg);
+    }
+  }
+</style>

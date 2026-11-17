@@ -1,33 +1,70 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import PageHeader from '@/components/layout/PageHeader.astro';
 import Button from '@/components/ui/Button.astro';
+import PriceTag from '@/components/ui/PriceTag.astro';
 ---
 
 <BaseLayout title="Page not found" noindex>
-  <PageHeader
-    eyebrow="Error 404"
-    title="This shop seems to have <em>moved.</em>"
-    lead="We couldn’t find the page you were looking for. It may have been renamed, or the link may be wrong."
-  >
-    <div class="nf-actions" data-reveal style="--reveal-i:3">
-      <Button href="/" icon="arrow-right">Back to home</Button>
-      <Button href="/help" variant="secondary">Help centre</Button>
+  <section class="nf">
+    <div class="container nf__grid">
+      <div class="nf__copy">
+        <p class="label" data-reveal="fade">Error 404 · Shop not found</p>
+        <h1 data-reveal="wipe">This shop has <span class="mark">moved.</span></h1>
+        <p class="lead" data-reveal style="--reveal-i:2">
+          We couldn’t find the page you were looking for. It may have been renamed, or the link may be wrong.
+        </p>
+        <div class="nf__actions" data-reveal style="--reveal-i:3">
+          <Button href="/">Back to the entrance</Button>
+          <Button href="/help" variant="secondary" icon="arrow-right">Help centre</Button>
+        </div>
+      </div>
+      <div class="nf__sign" data-reveal="fade" aria-hidden="true">
+        <PriceTag eyebrow="Shop #404" value="Closed" note="Try another floor" tilt={-10} size="lg" />
+      </div>
     </div>
-  </PageHeader>
-  <div class="nf-space"></div>
+  </section>
 </BaseLayout>
 
 <style>
-  .nf-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-top: 1rem;
+  .nf {
+    padding-block: clamp(3rem, 2rem + 6vw, 8rem);
   }
 
-  .nf-space {
-    height: clamp(4rem, 2rem + 8vw, 10rem);
+  .nf__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .nf__copy {
+    display: grid;
+    justify-items: start;
+    gap: 1.5rem;
+  }
+
+  .nf h1 {
+    font-size: var(--fs-3xl);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+  }
+
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+  }
+
+  .nf__sign {
+    display: grid;
+    place-items: center;
+  }
+
+  @media (max-width: 767px) {
+    .nf__grid {
+      grid-template-columns: 1fr;
+    }
+
   }
 </style>

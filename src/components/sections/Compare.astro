@@ -1,156 +1,315 @@
 ---
-import Icon from '@/components/ui/Icon.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 
-const before = [
-  'Walk from shop to shop asking the same question',
-  'No idea who has stock until you get there',
-  'Prices change from counter to counter',
-  'Hard to tell which shop to trust',
+/** An illustrative trip, not data. Each line gets struck through on scroll. */
+const receipt = [
+  { item: 'Shops visited', value: '8' },
+  { item: 'Same question asked', value: '8×' },
+  { item: 'Prices for one laptop', value: '5 different' },
+  { item: 'Shops with it in stock', value: '?' },
+  { item: 'Shops you could trust', value: '??' },
 ];
 
-const after = [
-  'See what every shop in the plaza is selling',
-  'Ask about stock in chat before you leave home',
-  'Compare prices side by side and sort them',
-  'Verified shops with ratings from real buyers',
+const better = [
+  { title: 'Every shop, one screen', body: 'See what each shop in the plaza is selling, and at what price.' },
+  { title: 'Ask before you go', body: 'Check stock and condition in chat from home.' },
+  { title: 'Sort by price', body: 'Line up the same phone from different shops.' },
+  { title: 'Trust you can see', body: 'Verified shops, rated by real buyers.' },
 ];
 ---
 
 <section class="section compare" aria-labelledby="compare-title">
-  <div class="container">
-    <SectionHeading
-      id="compare-title"
-      eyebrow="Why Tech Plaza"
-      title="Stop walking the plaza. <em>Start with your phone.</em>"
-      lead="Buying electronics locally is still the best way to see what you are paying for. Finding it shouldn’t take a whole afternoon."
-    />
+  <div class="container compare__grid">
+    <div class="compare__copy">
+      <SectionHeading
+        index="01"
+        label="The problem"
+        id="compare-title"
+        title="Stop walking the <span class='mark'>whole plaza.</span>"
+        lead="Buying electronics in person is still the best way to see what you pay for. Finding the right shop shouldn’t take all afternoon."
+        layout="stack"
+      />
 
-    <div class="compare__grid">
-      <article class="panel panel--before" data-reveal>
-        <h3 class="panel__title">The usual way</h3>
-        <ul role="list" class="panel__list">
+      <ol role="list" class="better">
+        {
+          better.map((b, i) => (
+            <li data-reveal style={`--reveal-i:${i}`}>
+              <span class="better__n">{String(i + 1).padStart(2, '0')}</span>
+              <span>
+                <strong>{b.title}</strong>
+                {b.body}
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="receipt-wrap" data-reveal data-receipt>
+      <div class="receipt">
+        <p class="receipt__head">
+          <span>Plaza trip · Saturday</span>
+          <span>No. 0001</span>
+        </p>
+        <p class="receipt__title">The usual way</p>
+        <ul role="list" class="receipt__lines">
           {
-            before.map((t) => (
-              <li>
-                <span class="panel__mark">
-                  <Icon name="x" size={14} strokeWidth={2.5} />
-                </span>
-                {t}
+            receipt.map((r, i) => (
+              <li style={`--i:${i}`}>
+                <span class="receipt__item">{r.item}</span>
+                <span class="receipt__dots" aria-hidden="true" />
+                <span class="receipt__val">{r.value}</span>
               </li>
             ))
           }
         </ul>
-      </article>
-
-      <article class="panel panel--after" data-reveal style="--reveal-i:1">
-        <h3 class="panel__title">With Tech Plaza</h3>
-        <ul role="list" class="panel__list">
-          {
-            after.map((t) => (
-              <li>
-                <span class="panel__mark">
-                  <Icon name="check" size={14} strokeWidth={2.5} />
-                </span>
-                {t}
-              </li>
-            ))
-          }
-        </ul>
-      </article>
+        <p class="receipt__total" style={`--i:${receipt.length}`}>
+          <span>Total</span>
+          <span>One afternoon</span>
+        </p>
+        <p class="receipt__foot">Thank you for walking</p>
+        <span class="receipt__stamp" aria-hidden="true">Sorted<br />with Tech Plaza</span>
+      </div>
     </div>
   </div>
 </section>
 
+<script>
+  // Strike the receipt once it is mostly on screen.
+  document.querySelectorAll<HTMLElement>('[data-receipt]').forEach((el) => {
+    new IntersectionObserver(
+      ([entry], obs) => {
+        if (entry.isIntersecting) {
+          el.classList.add('is-struck');
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.6 },
+    ).observe(el);
+  });
+</script>
+
 <style>
   .compare__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
-    max-width: 960px;
-    margin-inline: auto;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2.5rem, 1rem + 5vw, 6rem);
+    align-items: center;
   }
 
-  .panel {
-    padding: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);
-    border-radius: var(--radius-xl);
+  .compare__copy :global(.head) {
+    margin-bottom: 2.5rem;
   }
 
-  .panel--before {
-    background: var(--surface);
-    border: 1px solid var(--border);
-  }
-
-  .panel--after {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(150deg, var(--brand), var(--splash-deep));
-    color: #fff;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .panel--after::after {
-    content: '';
-    position: absolute;
-    right: -30%;
-    top: -40%;
-    width: 80%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgb(245 158 11 / 0.25), transparent 65%);
-  }
-
-  .panel__title {
-    margin-bottom: 1.5rem;
-    font-size: var(--fs-lg);
-  }
-
-  .panel--before .panel__title {
-    color: var(--text-2);
-  }
-
-  .panel__list {
-    position: relative;
-    z-index: 1;
+  .better {
     display: grid;
-    gap: 1.1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--rule-strong);
   }
 
-  .panel__list li {
+  .better li {
     display: flex;
-    gap: 0.875rem;
-    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1rem 1.25rem 0;
+    border-bottom: 1px solid var(--rule);
     font-size: var(--fs-sm);
+    color: var(--text-2);
     line-height: 1.55;
   }
 
-  .panel--before li {
-    color: var(--text-2);
+  .better li:nth-child(odd) {
+    border-right: 1px solid var(--rule);
   }
 
-  .panel__mark {
+  .better li:nth-child(even) {
+    padding-left: 1.25rem;
+  }
+
+  .better strong {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: var(--fs-md);
+    color: var(--text);
+  }
+
+  .better__n {
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    font-weight: 700;
+    color: var(--accent-700);
+    padding-top: 0.25rem;
+  }
+
+  /* Receipt */
+  .receipt-wrap {
     display: grid;
-    place-items: center;
-    flex: none;
-    width: 24px;
-    height: 24px;
-    margin-top: -1px;
-    border-radius: 50%;
+    justify-items: center;
   }
 
-  .panel--before .panel__mark {
-    background: var(--danger-bg);
-    color: var(--danger);
+  .receipt {
+    position: relative;
+    width: min(100%, 380px);
+    padding: 2rem 1.75rem 3rem;
+    background: var(--paper);
+    color: var(--slate-800);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    rotate: 2deg;
+    filter: drop-shadow(0 24px 30px rgb(15 23 42 / 0.16));
+    /* Torn zig-zag bottom edge */
+    --zig: 14px;
+    mask:
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--zig) 100%;
+    -webkit-mask:
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--zig) 100%;
   }
 
-  .panel--after .panel__mark {
-    background: var(--accent);
+  .receipt__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1.5px dashed var(--slate-300);
+    font-size: var(--fs-2xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .receipt__title {
+    margin: 1.25rem 0 1rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: var(--slate-900);
   }
 
-  @media (max-width: 767px) {
+  .receipt__lines {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .receipt__lines li,
+  .receipt__total {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .receipt__dots {
+    flex: 1;
+    border-bottom: 1.5px dotted var(--slate-300);
+    translate: 0 -3px;
+  }
+
+  .receipt__val {
+    font-weight: 700;
+  }
+
+  /* Strike-through line that draws across each row in turn */
+  .receipt__lines li::after,
+  .receipt__total::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    top: 52%;
+    height: 2px;
+    background: var(--danger);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease);
+    transition-delay: calc(var(--i) * 0.28s + 0.3s);
+  }
+
+  .is-struck .receipt__lines li::after,
+  .is-struck .receipt__total::after {
+    transform: scaleX(1);
+  }
+
+  .is-struck .receipt__lines li {
+    color: var(--slate-400);
+    transition: color 0.3s calc(var(--i) * 0.28s + 0.5s);
+  }
+
+  .receipt__total {
+    justify-content: space-between;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1.5px dashed var(--slate-300);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--slate-900);
+  }
+
+  .receipt__total::after {
+    top: auto;
+    bottom: 0.55em;
+  }
+
+  .receipt__foot {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: var(--fs-2xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  /* Rubber stamp that lands after the strikes */
+  .receipt__stamp {
+    position: absolute;
+    right: 1.25rem;
+    top: 44%;
+    padding: 0.55rem 0.8rem;
+    border: 3px solid var(--brand);
+    border-radius: 6px;
+    color: var(--brand);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+    background: rgb(255 253 248 / 0.85);
+    opacity: 0;
+    transform: rotate(-14deg) scale(1.8);
+    transition:
+      opacity 0.2s ease,
+      transform 0.45s var(--ease-back);
+    transition-delay: 2.1s;
+  }
+
+  .is-struck .receipt__stamp {
+    opacity: 1;
+    transform: rotate(-14deg) scale(1);
+  }
+
+  :global(html:not(.js)) .receipt__stamp {
+    opacity: 1;
+    transform: rotate(-14deg);
+  }
+
+  @media (max-width: 959px) {
     .compare__grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 559px) {
+    .better {
+      grid-template-columns: 1fr;
+    }
+
+    .better li:nth-child(odd) {
+      border-right: 0;
+    }
+
+    .better li:nth-child(even) {
+      padding-left: 0;
     }
   }
 </style>

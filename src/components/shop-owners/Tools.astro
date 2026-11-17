@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import PhoneFrame from '@/components/ui/PhoneFrame.astro';
 import Icon from '@/components/ui/Icon.astro';
@@ -8,7 +9,7 @@ import addProduct from '@/assets/screens/add-product.png';
 
 const rows = [
   {
-    eyebrow: 'Dashboard',
+    key: 'Dashboard',
     title: 'Your shop at a glance',
     body: 'Open the app and see how many listings are live, which chats are waiting, your rating and how many people follow you.',
     points: ['Live listings, unread chats, rating and followers', 'Recent products with a live/hidden switch', '“View as customer” to see your shop the way buyers do'],
@@ -16,7 +17,7 @@ const rows = [
     alt: 'Dashboard showing 4 live products, 0 unread chats, a 4.3 rating and 7 followers',
   },
   {
-    eyebrow: 'Listings',
+    key: 'Listings',
     title: 'Add a product in a minute',
     body: 'Take photos with your phone, add a price and a short description, and submit. We compress the photos so they load fast for customers.',
     points: ['5 to 7 photos, the first one is the cover', 'Negotiable or fixed price', 'Pick a category so buyers can find it'],
@@ -24,7 +25,7 @@ const rows = [
     alt: 'Add product form with photos, name, category, price and description',
   },
   {
-    eyebrow: 'Inventory',
+    key: 'Inventory',
     title: 'Keep your stock up to date',
     body: 'Sold the last one? Switch the listing off. Back in stock? Switch it on again. Your listing count is always shown, so there are no surprises.',
     points: ['One-tap live or hidden', 'Filter by live, hidden or awaiting approval', 'Edit price and details at any time'],
@@ -37,127 +38,220 @@ const rows = [
 <section class="section tools" aria-labelledby="tools-title">
   <div class="container">
     <SectionHeading
+      index="02"
+      label="Built for shopkeepers"
       id="tools-title"
-      eyebrow="Built for shopkeepers"
-      title="Simple tools that <em>fit in your pocket</em>"
+      title="Simple tools that <span class='mark'>fit in your pocket.</span>"
       lead="No laptop or website needed. If you can use WhatsApp, you can run your Tech Plaza shop."
+      tone="inverse"
     />
 
-    <div class="tools__rows">
-      {
-        rows.map((row, i) => (
-          <article class:list={['row', { 'row--flip': i % 2 === 1 }]}>
-            <div class="row__visual" data-reveal="scale">
-              <PhoneFrame src={row.screen} alt={row.alt} width={280} />
-            </div>
-            <div class="row__copy" data-reveal style="--reveal-i:1">
-              <p class="eyebrow">{row.eyebrow}</p>
+    <div class="tools__grid" data-tools>
+      <!-- Desktop: one sticky phone whose screen follows the text -->
+      <div class="tools__stick" aria-hidden="true">
+        <PhoneFrame class="tools__phone">
+          <div class="tools__screens">
+            {
+              rows.map((row, i) => (
+                <Image
+                  src={row.screen}
+                  alt=""
+                  widths={[300, 600]}
+                  sizes="300px"
+                  format="webp"
+                  quality={82}
+                  class:list={['tools__screen', { 'is-active': i === 0 }]}
+                  data-tool-screen={i}
+                />
+              ))
+            }
+          </div>
+        </PhoneFrame>
+      </div>
+
+      <ol role="list" class="tools__list">
+        {
+          rows.map((row, i) => (
+            <li class:list={['tool', { 'is-active': i === 0 }]} data-tool={i}>
+              <div class="tool__inline">
+                <PhoneFrame src={row.screen} alt={row.alt} width={260} />
+              </div>
+              <p class="label tool__key">
+                <span>{String.fromCharCode(65 + i)}</span>
+                {row.key}
+              </p>
               <h3>{row.title}</h3>
-              <p class="row__body">{row.body}</p>
-              <ul role="list">
+              <p class="tool__body">{row.body}</p>
+              <ul role="list" class="tool__points">
                 {row.points.map((p) => (
                   <li>
-                    <span class="row__check">
-                      <Icon name="check" size={14} strokeWidth={2.5} />
-                    </span>
+                    <Icon name="check" size={14} strokeWidth={3} />
                     {p}
                   </li>
                 ))}
               </ul>
-            </div>
-          </article>
-        ))
-      }
+            </li>
+          ))
+        }
+      </ol>
     </div>
   </div>
 </section>
 
+<script>
+  // Switch the sticky phone's screen to match the block in the middle of the viewport.
+  document.querySelectorAll<HTMLElement>('[data-tools]').forEach((root) => {
+    const blocks = [...root.querySelectorAll<HTMLElement>('[data-tool]')];
+    const screens = [...root.querySelectorAll<HTMLElement>('[data-tool-screen]')];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const i = Number((entry.target as HTMLElement).dataset.tool);
+          blocks.forEach((b, j) => b.classList.toggle('is-active', j === i));
+          screens.forEach((s, j) => s.classList.toggle('is-active', j === i));
+        }
+      },
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+    blocks.forEach((b) => observer.observe(b));
+  });
+</script>
+
 <style>
-  .tools__rows {
-    display: grid;
-    gap: clamp(4rem, 2rem + 6vw, 7rem);
+  .tools {
+    color: #fff;
+    background: var(--brand-900);
   }
 
-  .row {
+  .tools__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
     gap: clamp(2rem, 1rem + 5vw, 6rem);
   }
 
-  .row--flip .row__visual {
-    order: 1;
-  }
-
-  .row__visual {
-    position: relative;
+  .tools__stick {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+    align-self: start;
     display: grid;
     place-items: center;
+    padding-block: 1rem;
   }
 
-  .row__visual::before {
-    content: '';
+  .tools__stick :global(.tools__phone) {
+    width: min(300px, 100%);
+    box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.7);
+  }
+
+  .tools__screens {
     position: absolute;
-    width: min(420px, 90%);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--brand-tint-2), transparent 68%);
+    inset: 0;
   }
 
-  .row__visual :global(.phone) {
-    width: min(280px, 70vw);
+  .tools__screens :global(.tools__screen) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(4%);
+    transition:
+      opacity 0.5s var(--ease),
+      transform 0.7s var(--ease);
   }
 
-  .row__copy {
+  .tools__screens :global(.tools__screen.is-active) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .tools__list {
     display: grid;
-    gap: 1rem;
-    max-width: 30rem;
   }
 
-  .row__copy h3 {
+  .tool {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    min-height: 62vh;
+    padding-block: 3rem;
+    border-top: 1px solid var(--rule-inverse);
+    opacity: 0.35;
+    transition: opacity 0.5s var(--ease);
+  }
+
+  .tool.is-active {
+    opacity: 1;
+  }
+
+  .tool__inline {
+    display: none;
+  }
+
+  .tool__key {
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .tool__key span {
+    display: inline-grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 4px;
+    background: var(--accent);
+    color: var(--slate-900);
+  }
+
+  .tool h3 {
     font-size: var(--fs-xl);
   }
 
-  .row__body {
-    color: var(--text-2);
+  .tool__body {
+    max-width: 32rem;
+    font-size: var(--fs-lg);
+    color: rgb(255 255 255 / 0.72);
   }
 
-  .row__copy ul {
+  .tool__points {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.7rem;
     margin-top: 0.5rem;
   }
 
-  .row__copy li {
+  .tool__points li {
     display: flex;
-    gap: 0.75rem;
-    align-items: flex-start;
+    gap: 0.7rem;
+    align-items: center;
     font-size: var(--fs-sm);
     font-weight: 500;
   }
 
-  .row__check {
-    display: grid;
-    place-items: center;
+  .tool__points :global(svg) {
     flex: none;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--success-bg);
-    color: var(--success);
+    color: var(--accent);
   }
 
   @media (max-width: 859px) {
-    .row {
+    .tools__grid {
       grid-template-columns: 1fr;
     }
 
-    .row--flip .row__visual {
-      order: 0;
+    .tools__stick {
+      display: none;
     }
 
-    .row__copy {
-      margin-inline: auto;
+    .tool {
+      min-height: 0;
+      opacity: 1;
+    }
+
+    .tool__inline {
+      display: grid;
+      justify-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .tool__inline :global(.phone) {
+      width: min(260px, 70vw);
     }
   }
 </style>

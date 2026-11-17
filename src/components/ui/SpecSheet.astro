@@ -1,0 +1,175 @@
+---
+/**
+ * Features laid out like the spec table on an electronics box:
+ * a header strip, then rows of mono key → title and description.
+ */
+import Icon from './Icon.astro';
+import type { Feature } from '@/data/features';
+
+interface Props {
+  items: Feature[];
+  title: string;
+  /** Right side of the header strip, e.g. "v1.0". */
+  meta?: string;
+  columns?: 1 | 2;
+  tone?: 'default' | 'inverse';
+}
+
+const { items, title, meta, columns = 2, tone = 'default' } = Astro.props;
+---
+
+<div class:list={['spec', `spec--${tone}`, `spec--cols-${columns}`]} data-reveal>
+  <p class="spec__head">
+    <span>{title}</span>
+    {meta && <span>{meta}</span>}
+  </p>
+  <dl class="spec__rows">
+    {
+      items.map((f, i) => (
+        <div class="spec__row" style={`--i:${i}`}>
+          <dt class="spec__key">
+            <Icon name={f.icon} size={16} />
+            {f.key}
+          </dt>
+          <dd class="spec__val">
+            <strong>{f.title}</strong>
+            <span>{f.body}</span>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</div>
+
+<style>
+  .spec {
+    border: 1.5px solid var(--rule-strong);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .spec__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.25rem;
+    background: var(--slate-900);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .spec__head span:last-child {
+    color: var(--accent);
+  }
+
+  .spec__rows {
+    display: grid;
+    margin: 0;
+  }
+
+  .spec--cols-2 .spec__rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .spec__row {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.15rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    transition: background-color 0.25s var(--ease);
+  }
+
+  .spec--cols-2 .spec__row:nth-child(odd) {
+    border-right: 1px solid var(--rule);
+  }
+
+  .spec__row:hover {
+    background: var(--accent-tint);
+  }
+
+  .spec__key {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding-top: 0.15rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brand);
+  }
+
+  .spec__key :global(svg) {
+    flex: none;
+    margin-top: -1px;
+  }
+
+  .spec__val {
+    display: grid;
+    gap: 0.2rem;
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-2);
+    line-height: 1.55;
+  }
+
+  .spec__val strong {
+    color: var(--text);
+    font-size: var(--fs-md);
+  }
+
+  /* Inverse, for navy sections */
+  .spec--inverse {
+    background: transparent;
+    border-color: var(--rule-inverse);
+  }
+
+  .spec--inverse .spec__head {
+    background: rgb(255 255 255 / 0.06);
+    border-bottom: 1px solid var(--rule-inverse);
+  }
+
+  .spec--inverse .spec__row {
+    border-color: var(--rule-inverse);
+  }
+
+  .spec--inverse .spec__row:hover {
+    background: rgb(255 255 255 / 0.04);
+  }
+
+  .spec--inverse .spec__key {
+    color: var(--accent);
+  }
+
+  .spec--inverse .spec__val {
+    color: rgb(255 255 255 / 0.66);
+  }
+
+  .spec--inverse .spec__val strong {
+    color: #fff;
+  }
+
+  @media (max-width: 899px) {
+    .spec--cols-2 .spec__rows {
+      grid-template-columns: 1fr;
+    }
+
+    .spec--cols-2 .spec__row:nth-child(odd) {
+      border-right: 0;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .spec__row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

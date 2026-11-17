@@ -1,50 +1,38 @@
 ---
 import SectionHeading from '@/components/ui/SectionHeading.astro';
+import SpecSheet from '@/components/ui/SpecSheet.astro';
 import Button from '@/components/ui/Button.astro';
-import Icon from '@/components/ui/Icon.astro';
 import PhoneFrame from '@/components/ui/PhoneFrame.astro';
+import PriceTag from '@/components/ui/PriceTag.astro';
 import { ownerFeatures } from '@/data/features';
 import dashboard from '@/assets/screens/owner-dashboard.png';
 import products from '@/assets/screens/owner-products.png';
 ---
 
 <section class="section owners" aria-labelledby="owners-title">
-  <div class="owners__bg" aria-hidden="true"></div>
-  <div class="container owners__grid">
-    <div class="owners__visual" data-reveal="scale">
-      <PhoneFrame src={products} alt="My products screen with four live listings" width={260} class="owners__phone owners__phone--back" />
-      <PhoneFrame src={dashboard} alt="Shop owner dashboard with live listings, unread chats, rating and followers" width={280} class="owners__phone owners__phone--front" />
-    </div>
+  <div class="container">
+    <SectionHeading
+      index="04"
+      label="For shop owners"
+      id="owners-title"
+      title="Your shop, open <span class='mark'>after closing time.</span>"
+      lead="Customers search on their phones at midnight. Give them a storefront to browse, and a chat to use before they walk in."
+      tone="inverse"
+    />
 
-    <div class="owners__copy">
-      <SectionHeading
-        id="owners-title"
-        eyebrow="For shop owners"
-        title="Your shop, open to customers <em>around the clock</em>"
-        lead="Customers are already searching on their phones. Give them a storefront they can browse at midnight and a chat they can use before they walk in."
-        align="start"
-        tone="inverse"
-      />
+    <div class="owners__grid">
+      <div class="owners__visual" data-reveal="fade">
+        <PhoneFrame src={products} alt="My products screen with four live listings" width={260} class="owners__phone owners__phone--back" />
+        <PhoneFrame src={dashboard} alt="Shop owner dashboard with live listings, unread chats, rating and followers" width={280} class="owners__phone owners__phone--front" />
+        <PriceTag class="owners__tag" eyebrow="Listing fee" value="Rs 0" note="Free for shops" tilt={7} />
+      </div>
 
-      <ul role="list" class="owners__list">
-        {
-          ownerFeatures.map((f, i) => (
-            <li data-reveal style={`--reveal-i:${i % 3}`}>
-              <span class="owners__icon">
-                <Icon name={f.icon} size={18} />
-              </span>
-              <span>
-                <strong>{f.title}</strong>
-                {f.body}
-              </span>
-            </li>
-          ))
-        }
-      </ul>
-
-      <div class="owners__actions" data-reveal>
-        <Button href="/shop-owners" variant="accent" size="lg" icon="arrow-right">List your shop for free</Button>
-        <Button href="/shop-owners#onboarding" variant="outline-light" size="lg">How approval works</Button>
+      <div class="owners__copy">
+        <SpecSheet items={ownerFeatures} title="Spec sheet · Shop owner app" meta="Free" columns={1} tone="inverse" />
+        <div class="owners__actions" data-reveal>
+          <Button href="/shop-owners" variant="accent" size="lg">List your shop</Button>
+          <Button href="/shop-owners#onboarding" variant="outline-light" size="lg" icon="arrow-right">How approval works</Button>
+        </div>
       </div>
     </div>
   </div>
@@ -52,90 +40,59 @@ import products from '@/assets/screens/owner-products.png';
 
 <style>
   .owners {
+    --tag-hole: var(--brand);
     position: relative;
-    overflow: hidden;
+    overflow: clip;
     color: #fff;
-    background: var(--brand-900);
-  }
-
-  .owners__bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(50rem 30rem at 0% 0%, rgb(59 79 209 / 0.35), transparent 60%),
-      radial-gradient(40rem 30rem at 100% 100%, rgb(18 50 78 / 0.9), transparent 70%),
-      linear-gradient(160deg, var(--brand), var(--brand-900));
+    background: var(--brand);
   }
 
   .owners__grid {
-    position: relative;
     display: grid;
-    grid-template-columns: 0.9fr 1.1fr;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     gap: clamp(2.5rem, 1rem + 5vw, 6rem);
-    align-items: center;
+    align-items: start;
   }
 
   .owners__visual {
-    position: relative;
+    position: sticky;
+    top: calc(var(--header-h) + 3rem);
     width: min(100%, 440px);
-    aspect-ratio: 1 / 1.12;
+    aspect-ratio: 1 / 1.2;
     margin-inline: auto;
   }
 
   .owners__visual :global(.owners__phone) {
     position: absolute;
+    box-shadow: 0 40px 70px -30px rgb(0 0 0 / 0.6);
   }
 
   .owners__visual :global(.owners__phone--front) {
     width: 58%;
     left: 0;
-    top: 4%;
+    top: 6%;
     z-index: 1;
+    rotate: -3deg;
   }
 
   .owners__visual :global(.owners__phone--back) {
     width: 52%;
     right: 0;
-    top: 12%;
+    top: 14%;
     rotate: 5deg;
-    opacity: 0.9;
+    opacity: 0.85;
   }
 
-  .owners__copy :global(.heading) {
-    margin-bottom: 2rem;
+  .owners__visual :global(.owners__tag) {
+    position: absolute;
+    z-index: 2;
+    right: 4%;
+    top: -4%;
   }
 
-  .owners__list {
+  .owners__copy {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem 2rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .owners__list li {
-    display: flex;
-    gap: 0.875rem;
-    font-size: var(--fs-sm);
-    line-height: 1.55;
-    color: rgb(255 255 255 / 0.68);
-  }
-
-  .owners__list strong {
-    display: block;
-    margin-bottom: 0.2rem;
-    color: #fff;
-    font-weight: 600;
-  }
-
-  .owners__icon {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 11px;
-    background: rgb(245 158 11 / 0.14);
-    color: var(--accent);
+    gap: 2rem;
   }
 
   .owners__actions {
@@ -150,18 +107,20 @@ import products from '@/assets/screens/owner-products.png';
     }
 
     .owners__visual {
-      order: 1;
+      position: relative;
+      top: auto;
       width: min(100%, 380px);
     }
   }
 
   @media (max-width: 559px) {
-    .owners__list {
-      grid-template-columns: 1fr;
-    }
-
     .owners__actions {
       flex-direction: column;
+    }
+
+    .owners__actions :global(.btn__label) {
+      flex: 1;
+      justify-content: center;
     }
   }
 </style>

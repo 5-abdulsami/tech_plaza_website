@@ -7,185 +7,197 @@ import type { IconName } from '@/components/ui/icons';
 import { helpFaqs } from '@/data/faqs';
 import { site } from '@/config/site';
 
-const contacts: { icon: IconName; title: string; body: string; href: string; cta: string }[] = [
-  {
-    icon: 'mail',
-    title: 'Email support',
-    body: 'Questions about the app, your account or a shop. A real person reads every message.',
-    href: `mailto:${site.contact.email}`,
-    cta: site.contact.email,
-  },
-  {
-    icon: 'store',
-    title: 'List your shop',
-    body: 'Run a shop in one of our plazas? We’ll help you get set up.',
-    href: '/shop-owners',
-    cta: 'Shop owner guide',
-  },
-  {
-    icon: 'trash',
-    title: 'Delete your account',
-    body: 'Remove your account and the data linked to it.',
-    href: '/delete-account',
-    cta: 'How deletion works',
-  },
+const contacts: { icon: IconName; title: string; href: string; cta: string }[] = [
+  { icon: 'mail', title: 'Email support', href: `mailto:${site.contact.email}`, cta: site.contact.email },
+  { icon: 'store', title: 'List your shop', href: '/shop-owners', cta: 'Shop owner guide' },
+  { icon: 'trash', title: 'Delete your account', href: '/delete-account', cta: 'How deletion works' },
 ];
 ---
 
 <BaseLayout title="Help centre" description="Answers to common questions about Tech Plaza for customers and shop owners, and how to contact us.">
   <PageHeader
-    eyebrow="Help centre"
-    title="How can we <em>help?</em>"
-    lead="Find quick answers below, or get in touch and a real person will reply."
-  >
-    <nav class="help-jump" aria-label="Help topics" data-reveal style="--reveal-i:3">
-      {helpFaqs.map((g) => <a href={`#${g.id}`}>{g.title}</a>)}
-    </nav>
-  </PageHeader>
+    label="Help centre"
+    title="How can we <span class='mark'>help?</span>"
+    lead="Find a quick answer below, or get in touch. A real person reads every message."
+  />
 
-  <section id="contact" class="container help-contact" aria-label="Contact options">
-    {
-      contacts.map((c, i) => (
-        <a class="contact" href={c.href} data-reveal style={`--reveal-i:${i}`}>
-          <span class="contact__icon">
-            <Icon name={c.icon} size={22} />
-          </span>
-          <h2>{c.title}</h2>
-          <p>{c.body}</p>
-          <span class="contact__cta">
-            {c.cta} <Icon name="arrow-right" size={16} />
-          </span>
-        </a>
-      ))
-    }
-  </section>
+  <div class="container help">
+    <aside class="desk" aria-label="Help topics and contact">
+      <nav class="desk__topics" aria-label="Help topics">
+        <p class="label">Topics</p>
+        <ol role="list">
+          {
+            helpFaqs.map((g, i) => (
+              <li>
+                <a href={`#${g.id}`}>
+                  <span>{String(i + 1).padStart(2, '0')}</span>
+                  {g.title}
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
 
-  <div class="container-narrow help-groups">
-    {
-      helpFaqs.map((group) => (
-        <section id={group.id} class="help-group" aria-labelledby={`${group.id}-title`}>
-          <h2 id={`${group.id}-title`} data-reveal>
-            {group.title}
-          </h2>
-          <FaqList items={group.items} group={group.id} />
-        </section>
-      ))
-    }
+      <div id="contact" class="desk__card">
+        <p class="label desk__card-label">Help desk · Open</p>
+        <ul role="list">
+          {
+            contacts.map((c) => (
+              <li>
+                <a href={c.href}>
+                  <Icon name={c.icon} size={18} />
+                  <span>
+                    <strong>{c.title}</strong>
+                    <span class="desk__cta">{c.cta}</span>
+                  </span>
+                  <Icon name="arrow-up-right" size={16} class="desk__go" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </aside>
+
+    <div class="help__groups">
+      {
+        helpFaqs.map((group, i) => (
+          <section id={group.id} class="help__group" aria-labelledby={`${group.id}-title`}>
+            <p class="label help__idx">Topic {String(i + 1).padStart(2, '0')}</p>
+            <h2 id={`${group.id}-title`} data-reveal="wipe">
+              {group.title}
+            </h2>
+            <FaqList items={group.items} group={group.id} />
+          </section>
+        ))
+      }
+    </div>
   </div>
 </BaseLayout>
 
 <style>
-  .help-jump {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .help-jump a {
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-pill);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    font-size: var(--fs-sm);
-    font-weight: 500;
-    color: var(--text-2);
-    transition:
-      background-color var(--dur-fast),
-      color var(--dur-fast),
-      border-color var(--dur-fast);
-  }
-
-  .help-jump a:hover {
-    background: var(--brand);
-    border-color: var(--brand);
-    color: #fff;
-  }
-
-  .help-contact {
+  .help {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: clamp(3.5rem, 2rem + 5vw, 6rem);
-  }
-
-  .contact {
-    display: grid;
-    align-content: start;
-    gap: 0.6rem;
-    padding: 1.75rem;
-    border-radius: var(--radius-lg);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    transition:
-      transform 0.4s var(--ease),
-      box-shadow 0.4s var(--ease),
-      border-color 0.4s var(--ease),
-      opacity var(--dur) var(--ease);
-  }
-
-  .contact:hover {
-    transform: translateY(-4px);
-    border-color: var(--brand-tint-2);
-    box-shadow: var(--shadow);
-  }
-
-  .contact__icon {
-    display: grid;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    margin-bottom: 0.4rem;
-    border-radius: 14px;
-    background: var(--brand-tint);
-    color: var(--brand);
-  }
-
-  .contact h2 {
-    font-size: 1.125rem;
-  }
-
-  .contact p {
-    color: var(--text-2);
-    font-size: var(--fs-sm);
-  }
-
-  .contact__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: 0.4rem;
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    color: var(--brand);
-    overflow-wrap: anywhere;
-  }
-
-  .contact__cta :global(svg) {
-    flex: none;
-    transition: transform var(--dur-fast) var(--ease);
-  }
-
-  .contact:hover .contact__cta :global(svg) {
-    transform: translateX(3px);
-  }
-
-  .help-groups {
-    display: grid;
-    gap: clamp(3rem, 2rem + 3vw, 4.5rem);
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+    align-items: start;
     padding-bottom: var(--section-y);
   }
 
-  .help-group h2 {
-    margin-bottom: 1.25rem;
+  .desk {
+    position: sticky;
+    top: calc(var(--header-h) + 1.5rem);
+    display: grid;
+    gap: 2rem;
+  }
+
+  .desk__topics ol {
+    display: grid;
+    margin-top: 0.75rem;
+    border-top: 1.5px solid var(--rule-strong);
+  }
+
+  .desk__topics a {
+    display: flex;
+    gap: 0.9rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 600;
+    transition:
+      color var(--dur-fast),
+      padding-left 0.3s var(--ease);
+  }
+
+  .desk__topics a:hover {
+    color: var(--brand);
+    padding-left: 0.4rem;
+  }
+
+  .desk__topics a span {
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    font-weight: 700;
+    color: var(--accent-700);
+  }
+
+  /* Contact options on a navy help-desk card */
+  .desk__card {
+    border-radius: var(--radius-lg);
+    background: var(--brand-900);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .desk__card-label {
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--rule-inverse);
+    color: var(--accent);
+  }
+
+  .desk__card a {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) 16px;
+    gap: 0.8rem;
+    align-items: center;
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid var(--rule-inverse);
+    transition: background-color 0.25s var(--ease);
+  }
+
+  .desk__card li:last-child a {
+    border-bottom: 0;
+  }
+
+  .desk__card a:hover {
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .desk__card strong {
+    display: block;
+    font-size: var(--fs-sm);
+  }
+
+  .desk__cta {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    color: rgb(255 255 255 / 0.6);
+    overflow-wrap: anywhere;
+  }
+
+  .desk__card :global(.desk__go) {
+    color: var(--accent);
+    transition: transform 0.3s var(--ease);
+  }
+
+  .desk__card a:hover :global(.desk__go) {
+    transform: translate(2px, -2px);
+  }
+
+  .help__groups {
+    display: grid;
+    gap: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+
+  .help__idx {
+    margin-bottom: 0.5rem;
+    color: var(--accent-700);
+  }
+
+  .help__group h2 {
+    margin-bottom: 1.5rem;
     font-size: var(--fs-xl);
   }
 
-  @media (max-width: 859px) {
-    .help-contact {
+  @media (max-width: 959px) {
+    .help {
       grid-template-columns: 1fr;
-      max-width: 34rem;
+    }
+
+    .desk {
+      position: static;
     }
   }
 </style>

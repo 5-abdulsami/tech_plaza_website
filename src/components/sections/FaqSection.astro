@@ -3,37 +3,79 @@ import SectionHeading from '@/components/ui/SectionHeading.astro';
 import FaqList from '@/components/ui/FaqList.astro';
 import Button from '@/components/ui/Button.astro';
 import type { Faq } from '@/data/faqs';
+import { site } from '@/config/site';
 
 interface Props {
   items: Faq[];
   title?: string;
-  eyebrow?: string;
+  label?: string;
+  index?: string;
   id?: string;
 }
 
-const { items, title = 'Questions, <em>answered</em>', eyebrow = 'FAQ', id = 'faq' } = Astro.props;
+const {
+  items,
+  title = 'Questions, <span class="mark">answered.</span>',
+  label = 'FAQ',
+  index,
+  id = 'faq',
+} = Astro.props;
 ---
 
 <section id={id} class="section" aria-labelledby={`${id}-title`}>
-  <div class="container-narrow">
-    <SectionHeading id={`${id}-title`} eyebrow={eyebrow} title={title} />
-    <FaqList items={items} group={id} />
-    <div class="faq-more" data-reveal>
-      <p>Still have a question?</p>
-      <Button href="/help" variant="ghost" icon="arrow-right">Visit the help centre</Button>
+  <div class="container faq-wrap">
+    <div class="faq-side">
+      <SectionHeading index={index} label={label} id={`${id}-title`} title={title} layout="stack" />
+      <div class="faq-more" data-reveal>
+        <p>Still stuck? A real person reads every message.</p>
+        <Button href="/help" variant="link" icon="arrow-right">Help centre</Button>
+        <Button href={`mailto:${site.contact.email}`} variant="link" icon="arrow-right">{site.contact.email}</Button>
+      </div>
     </div>
+    <FaqList items={items} group={id} />
   </div>
 </section>
 
 <style>
+  .faq-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+    align-items: start;
+  }
+
+  .faq-side {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+
+  .faq-side :global(.head) {
+    margin-bottom: 2rem;
+  }
+
   .faq-more {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem 0.5rem;
-    margin-top: 2rem;
+    display: grid;
+    justify-items: start;
+    gap: 0.4rem;
     color: var(--text-2);
     font-size: var(--fs-sm);
+  }
+
+  .faq-more p {
+    margin-bottom: 0.25rem;
+  }
+
+  @media (max-width: 899px) {
+    .faq-wrap {
+      grid-template-columns: 1fr;
+    }
+
+    .faq-side {
+      position: static;
+    }
+
+    .faq-more {
+      order: 1;
+    }
   }
 </style>

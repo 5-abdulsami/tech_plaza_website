@@ -1,5 +1,5 @@
 ---
-import SectionHeading from '@/components/ui/SectionHeading.astro';
+import PriceTag from '@/components/ui/PriceTag.astro';
 import Icon from '@/components/ui/Icon.astro';
 import type { IconName } from '@/components/ui/icons';
 
@@ -12,25 +12,30 @@ const included: { icon: IconName; title: string; body: string }[] = [
 ---
 
 <section id="free" class="section free" aria-labelledby="free-title">
-  <div class="container">
-    <div class="free__card" data-reveal="scale">
-      <SectionHeading
-        id="free-title"
-        eyebrow="Pricing"
-        title="Free. <em>Completely.</em>"
-        lead="No listing fees, no commission on your sales, no card needed. Just a real shop and your CNIC."
-        tone="inverse"
-      />
+  <div class="container free__grid">
+    <div class="free__tag" data-reveal="fade">
+      <PriceTag eyebrow="Price for shops" value="Rs 0" note="No fees · No commission" tilt={-5} size="lg" />
+    </div>
 
-      <ul role="list" class="free__grid">
+    <div class="free__copy">
+      <p class="label" data-reveal="fade"><span class="free__idx">03</span> Pricing</p>
+      <h2 id="free-title" class="free__title" data-reveal="wipe">Free. <span class="mark">Completely.</span></h2>
+      <p class="lead" data-reveal style="--reveal-i:2">
+        No listing fees, no commission on your sales, no card needed. Just a real shop and your CNIC.
+      </p>
+
+      <ul role="list" class="free__list">
         {
           included.map((item, i) => (
             <li data-reveal style={`--reveal-i:${i}`}>
-              <span class="free__icon">
-                <Icon name={item.icon} size={20} />
+              <span class="free__check">
+                <Icon name="check" size={14} strokeWidth={3} />
               </span>
-              <strong>{item.title}</strong>
-              <span>{item.body}</span>
+              <span>
+                <strong>{item.title}</strong>
+                {item.body}
+              </span>
+              <span class="free__price">Rs 0</span>
             </li>
           ))
         }
@@ -40,79 +45,82 @@ const included: { icon: IconName; title: string; body: string }[] = [
 </section>
 
 <style>
-  .free__card {
-    position: relative;
-    overflow: hidden;
-    padding: clamp(2.5rem, 1.5rem + 4vw, 4.5rem) clamp(1.25rem, 1rem + 3vw, 4rem);
-    border-radius: var(--radius-xl);
-    background: linear-gradient(160deg, var(--brand), var(--brand-900));
-    box-shadow: var(--shadow-lg);
-    isolation: isolate;
-  }
-
-  .free__card::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: -30%;
-    right: -10%;
-    width: 60%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgb(245 158 11 / 0.22), transparent 65%);
-  }
-
   .free__grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+    align-items: center;
   }
 
-  .free__grid li {
-    display: grid;
-    align-content: start;
-    gap: 0.4rem;
-    padding: 1.5rem;
-    border-radius: var(--radius-lg);
-    background: rgb(255 255 255 / 0.05);
-    border: 1px solid rgb(255 255 255 / 0.1);
-    color: rgb(255 255 255 / 0.68);
-    font-size: var(--fs-sm);
-    transition:
-      background-color 0.4s var(--ease),
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
-  }
-
-  .free__grid li:hover {
-    background: rgb(255 255 255 / 0.09);
-  }
-
-  .free__grid strong {
-    color: #fff;
-    font-size: 1.0625rem;
-  }
-
-  .free__icon {
+  .free__tag {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
-    margin-bottom: 0.5rem;
-    border-radius: 12px;
-    background: rgb(245 158 11 / 0.15);
-    color: var(--accent);
   }
 
-  @media (max-width: 959px) {
-    .free__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  .free__copy {
+    display: grid;
+    gap: 1.25rem;
   }
 
-  @media (max-width: 479px) {
+  .free__idx {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.2rem;
+    height: 1.6rem;
+    border: 1.5px solid currentColor;
+    border-radius: 4px;
+    color: var(--brand);
+  }
+
+  .free__title {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+  }
+
+  /* Itemised like a bill where every line costs nothing */
+  .free__list {
+    margin-top: 1rem;
+    border-top: 1.5px solid var(--rule-strong);
+  }
+
+  .free__list li {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: var(--fs-sm);
+    color: var(--text-2);
+  }
+
+  .free__list strong {
+    display: block;
+    color: var(--text);
+    font-size: var(--fs-md);
+  }
+
+  .free__check {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: var(--brand);
+    color: #fff;
+  }
+
+  .free__price {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--success);
+  }
+
+  @media (max-width: 859px) {
     .free__grid {
       grid-template-columns: 1fr;
     }
+
   }
 </style>

@@ -3,13 +3,15 @@ import type { HTMLAttributes } from 'astro/types';
 import Icon from './Icon.astro';
 import type { IconName } from './icons';
 
-type Variant = 'primary' | 'accent' | 'secondary' | 'ghost' | 'light' | 'outline-light';
+type Variant = 'primary' | 'accent' | 'secondary' | 'light' | 'outline-light' | 'link';
 
 interface Props extends Omit<HTMLAttributes<'a'>, 'class'> {
   href: string;
   variant?: Variant;
   size?: 'md' | 'lg';
-  icon?: IconName;
+  /** Icon in the trailing key. Defaults to an arrow; pass `false` for none. */
+  icon?: IconName | false;
+  /** Small icon before the label. */
   iconStart?: IconName;
   class?: string;
 }
@@ -18,7 +20,7 @@ const {
   href,
   variant = 'primary',
   size = 'md',
-  icon,
+  icon = 'arrow-up-right',
   iconStart,
   class: className,
   ...rest
@@ -29,115 +31,188 @@ const external = /^https?:\/\//.test(href);
 
 <a
   href={href}
-  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, { 'btn--keyed': icon && variant !== 'link' }, className]}
   {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
   {...rest}
 >
-  {iconStart && <Icon name={iconStart} size={18} />}
-  <span><slot /></span>
-  {icon && <Icon name={icon} size={18} class="btn__trail" />}
+  <span class="btn__label">
+    {iconStart && <Icon name={iconStart} size={17} />}
+    <slot />
+  </span>
+  {
+    icon && (
+      <span class="btn__key" aria-hidden="true">
+        <Icon name={icon} size={18} class="btn__icon" />
+      </span>
+    )
+  }
 </a>
 
 <style>
+  /*
+   * A label plus a separate square "key" holding the arrow. On hover the key
+   * fills amber and the arrow slides out and back in, like pressing a button.
+   */
   .btn {
-    --pad-x: 1.25rem;
+    --h: 48px;
+    --bg: var(--brand);
+    --fg: #fff;
+    --line: rgb(255 255 255 / 0.18);
+    --key-bg: transparent;
+    --key-fg: currentColor;
+    --key-hover-bg: var(--accent);
+    --key-hover-fg: var(--slate-900);
+
     position: relative;
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    min-height: 46px;
-    padding: 0.625rem var(--pad-x);
-    border-radius: var(--radius-pill);
-    border: 1px solid transparent;
+    align-items: stretch;
+    min-height: var(--h);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+    border: 1.5px solid var(--bd, transparent);
     font-size: var(--fs-sm);
     font-weight: 600;
     line-height: 1.2;
     white-space: nowrap;
+    isolation: isolate;
+    overflow: hidden;
     transition:
       background-color var(--dur-fast) var(--ease),
       border-color var(--dur-fast) var(--ease),
       color var(--dur-fast) var(--ease),
-      box-shadow var(--dur-fast) var(--ease),
-      transform var(--dur-fast) var(--ease);
-  }
-
-  .btn:active {
-    transform: translateY(1px) scale(0.99);
+      transform var(--dur-fast) var(--ease),
+      box-shadow var(--dur-fast) var(--ease);
   }
 
   .btn--lg {
-    --pad-x: 1.6rem;
-    min-height: 54px;
+    --h: 56px;
     font-size: var(--fs-md);
   }
 
-  .btn :global(.btn__trail) {
-    transition: transform var(--dur-fast) var(--ease);
+  .btn:active {
+    transform: translateY(1px);
   }
 
-  .btn:hover :global(.btn__trail) {
-    transform: translateX(3px);
+  .btn__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0 1.2rem;
   }
 
-  .btn--primary {
-    background: var(--brand);
-    color: #fff;
-    box-shadow: 0 8px 20px -8px rgb(17 30 115 / 0.55);
+  .btn--lg .btn__label {
+    padding: 0 1.5rem;
   }
 
+  .btn__key {
+    display: grid;
+    place-items: center;
+    width: var(--h);
+    flex: none;
+    border-left: 1.5px solid var(--line);
+    background: var(--key-bg);
+    color: var(--key-fg);
+    overflow: hidden;
+    transition:
+      background-color 0.3s var(--ease),
+      color 0.3s var(--ease);
+  }
+
+  .btn:hover .btn__key {
+    background: var(--key-hover-bg);
+    color: var(--key-hover-fg);
+  }
+
+  .btn:hover :global(.btn__icon) {
+    animation: key-out-in 0.45s var(--ease) both;
+  }
+
+  @keyframes key-out-in {
+    49% {
+      transform: translate(120%, -120%);
+    }
+    50% {
+      transform: translate(-120%, 120%);
+    }
+    100% {
+      transform: none;
+    }
+  }
+
+  /* Variants */
   .btn--primary:hover {
-    background: var(--brand-600);
-    box-shadow: 0 12px 28px -10px rgb(17 30 115 / 0.6);
+    --bg: var(--brand-600);
   }
 
   .btn--accent {
-    background: var(--accent);
-    color: var(--slate-900);
-    box-shadow: 0 8px 20px -8px rgb(245 158 11 / 0.6);
+    --bg: var(--accent);
+    --fg: var(--slate-900);
+    --line: rgb(15 23 42 / 0.2);
+    --key-hover-bg: var(--slate-900);
+    --key-hover-fg: var(--accent);
   }
 
   .btn--accent:hover {
-    background: #fbb12e;
+    --bg: #fbad2b;
   }
 
   .btn--secondary {
-    background: var(--surface);
-    color: var(--text);
-    border-color: var(--border);
-    box-shadow: var(--shadow-sm);
+    --bg: var(--surface);
+    --fg: var(--text);
+    --bd: var(--rule-strong);
+    --line: var(--rule-strong);
+    --key-hover-bg: var(--brand);
+    --key-hover-fg: #fff;
   }
 
   .btn--secondary:hover {
-    border-color: var(--slate-300);
-    background: var(--slate-50);
-  }
-
-  .btn--ghost {
-    color: var(--brand);
-    --pad-x: 0.75rem;
-  }
-
-  .btn--ghost:hover {
-    background: var(--brand-tint);
+    box-shadow: var(--shadow-hard);
+    transform: translate(-2px, -2px);
   }
 
   .btn--light {
-    background: #fff;
-    color: var(--brand);
-  }
-
-  .btn--light:hover {
-    background: var(--brand-tint);
+    --bg: #fff;
+    --fg: var(--brand);
+    --line: rgb(17 30 115 / 0.15);
   }
 
   .btn--outline-light {
-    color: #fff;
-    border-color: rgb(255 255 255 / 0.3);
+    --bg: transparent;
+    --fg: #fff;
+    --bd: rgb(255 255 255 / 0.4);
+    --line: rgb(255 255 255 / 0.4);
   }
 
   .btn--outline-light:hover {
-    background: rgb(255 255 255 / 0.1);
-    border-color: rgb(255 255 255 / 0.5);
+    --bg: rgb(255 255 255 / 0.08);
+  }
+
+  /* Text link with an underline that draws in */
+  .btn--link {
+    --h: auto;
+    background: none;
+    color: var(--brand);
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .btn--link .btn__label {
+    padding: 0.25rem 0;
+    background: linear-gradient(currentColor, currentColor) left bottom / 0% 1.5px no-repeat;
+    transition: background-size 0.35s var(--ease);
+  }
+
+  .btn--link:hover .btn__label {
+    background-size: 100% 1.5px;
+  }
+
+  .btn--link .btn__key {
+    width: auto;
+    padding-left: 0.4rem;
+    border: 0;
+    background: none !important;
+    color: inherit !important;
   }
 </style>

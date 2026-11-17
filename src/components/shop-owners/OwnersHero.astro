@@ -2,25 +2,29 @@
 import PhoneFrame from '@/components/ui/PhoneFrame.astro';
 import StoreButton from '@/components/ui/StoreButton.astro';
 import Button from '@/components/ui/Button.astro';
-import Icon from '@/components/ui/Icon.astro';
+import PriceTag from '@/components/ui/PriceTag.astro';
+import Stamp from '@/components/ui/Stamp.astro';
 import dashboard from '@/assets/screens/owner-dashboard.png';
 import shop from '@/assets/screens/shop-profile.png';
 import { site } from '@/config/site';
 
 const stats = [
-  { value: 'Rs 0', label: 'to list your shop' },
-  { value: '0%', label: 'commission on sales' },
-  { value: '5–7', label: 'photos per product' },
+  { value: 'Rs 0', label: 'Listing fee' },
+  { value: '0%', label: 'Commission' },
+  { value: '5–7', label: 'Photos per product' },
 ];
 ---
 
 <section class="ohero" aria-labelledby="ohero-title">
-  <div class="ohero__bg" aria-hidden="true"></div>
   <div class="container ohero__grid">
     <div class="ohero__copy">
-      <p class="eyebrow" data-reveal><Icon name="store" size={16} /> For shop owners</p>
-      <h1 id="ohero-title" class="ohero__title" data-reveal style="--reveal-i:1">
-        Put your shop in every customer’s <span>pocket.</span>
+      <p class="label" data-reveal="fade">
+        <a href="/">techplaza.app</a>
+        <span aria-hidden="true">/</span>
+        <span class="ohero__here">For shop owners</span>
+      </p>
+      <h1 id="ohero-title" class="ohero__title" data-reveal="wipe" style="--reveal-i:1">
+        Put your shop in every <span class="mark">customer’s pocket.</span>
       </h1>
       <p class="lead" data-reveal style="--reveal-i:2">
         Tech Plaza gives your plaza shop a storefront customers can browse from home. They see your products and
@@ -41,7 +45,7 @@ const stats = [
         {
           stats.map((s) => (
             <div>
-              <dt>{s.label}</dt>
+              <dt class="label">{s.label}</dt>
               <dd>{s.value}</dd>
             </div>
           ))
@@ -49,38 +53,25 @@ const stats = [
       </dl>
     </div>
 
-    <div class="ohero__visual" data-reveal="scale" style="--reveal-i:2">
+    <div class="ohero__visual" data-reveal="fade" style="--reveal-i:2">
+      <span class="ohero__slab" aria-hidden="true"></span>
       <PhoneFrame src={shop} alt="A shop page as customers see it" width={260} eager class="ohero__phone ohero__phone--back" />
       <PhoneFrame src={dashboard} alt="Shop owner dashboard" width={290} eager class="ohero__phone ohero__phone--front" />
-      <div class="ohero__badge" aria-hidden="true">
-        <Icon name="badge-check" size={18} />
-        Shop approved
-      </div>
+      <PriceTag class="ohero__tag" eyebrow="Listing fee" value="Rs 0" note="Free for shops" tilt={8} />
+      <Stamp class="ohero__stamp" text="Shop approved • Ready for customers • " icon="badge-check" size={128} />
     </div>
   </div>
 </section>
 
 <style>
   .ohero {
-    position: relative;
-    margin-top: calc(var(--header-h) * -1);
-    padding: calc(var(--header-h) + clamp(2.5rem, 1rem + 5vw, 5rem)) 0 clamp(4rem, 2rem + 5vw, 6.5rem);
-    overflow: hidden;
-  }
-
-  .ohero__bg {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(50rem 34rem at 90% 0%, rgb(245 158 11 / 0.12), transparent 60%),
-      radial-gradient(50rem 34rem at 0% 30%, rgb(17 30 115 / 0.08), transparent 60%),
-      linear-gradient(180deg, #fff, var(--bg));
+    padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) 0 clamp(4rem, 2rem + 5vw, 6.5rem);
+    border-bottom: 1.5px solid var(--rule-strong);
   }
 
   .ohero__grid {
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
     align-items: center;
     gap: clamp(2rem, 1rem + 4vw, 5rem);
   }
@@ -88,17 +79,27 @@ const stats = [
   .ohero__copy {
     display: grid;
     justify-items: start;
-    gap: 1.4rem;
+    gap: 1.5rem;
+  }
+
+  .ohero__copy .label a:hover {
+    color: var(--brand);
+  }
+
+  .ohero__here {
+    color: var(--brand);
   }
 
   .ohero__title {
-    font-size: var(--fs-3xl);
-    letter-spacing: -0.04em;
-    line-height: 1.05;
+    font-size: clamp(2.75rem, 1.6rem + 4.4vw, 5.5rem);
+    font-weight: 800;
+    line-height: 0.96;
+    letter-spacing: -0.045em;
+    color: var(--brand);
   }
 
-  .ohero__title span {
-    color: var(--accent);
+  .ohero__title .mark {
+    color: var(--slate-900);
   }
 
   .ohero__actions {
@@ -109,95 +110,89 @@ const stats = [
 
   .ohero__stats {
     display: grid;
-    grid-template-columns: repeat(3, auto);
-    gap: 2.5rem;
-    margin-top: 0.75rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    max-width: 34rem;
+    margin-top: 0.5rem;
+    border-top: 1.5px solid var(--rule-strong);
   }
 
   .ohero__stats div {
     display: flex;
     flex-direction: column-reverse;
-    gap: 0.2rem;
+    gap: 0.3rem;
+    padding: 1rem 1rem 0 0;
+  }
+
+  .ohero__stats div + div {
+    padding-left: 1rem;
+    border-left: 1px solid var(--rule);
   }
 
   .ohero__stats dd {
     margin: 0;
+    font-family: var(--font-display);
     font-size: var(--fs-xl);
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--brand);
   }
 
-  .ohero__stats dt {
-    font-size: var(--fs-xs);
-    color: var(--text-3);
-  }
-
+  /* Visual */
   .ohero__visual {
     position: relative;
     width: min(100%, 460px);
-    aspect-ratio: 1 / 1.08;
+    aspect-ratio: 1 / 1.12;
     margin-inline: auto;
+  }
+
+  .ohero__slab {
+    position: absolute;
+    inset: 14% 4% 6% 10%;
+    border-radius: var(--radius-xl);
+    background: var(--accent);
+    background-image: repeating-linear-gradient(-45deg, rgb(15 23 42 / 0.06) 0 2px, transparent 2px 14px);
   }
 
   .ohero__visual :global(.ohero__phone) {
     position: absolute;
+    box-shadow: var(--shadow-lg);
   }
 
   .ohero__visual :global(.ohero__phone--front) {
-    width: 56%;
-    left: 4%;
+    width: 54%;
+    left: 8%;
     top: 0;
     z-index: 1;
-    animation: ofloat 7s var(--ease-in-out) infinite;
+    rotate: -4deg;
   }
 
   .ohero__visual :global(.ohero__phone--back) {
-    width: 50%;
+    width: 48%;
     right: 2%;
-    top: 9%;
-    rotate: 6deg;
-    animation: ofloat 7s var(--ease-in-out) -3.5s infinite;
+    top: 10%;
+    rotate: 5deg;
   }
 
-  .ohero__badge {
+  .ohero__visual :global(.ohero__tag) {
     position: absolute;
     z-index: 2;
-    right: 6%;
-    bottom: 8%;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.7rem 1rem;
-    border-radius: 14px;
-    background: #fff;
-    box-shadow: 0 18px 40px -16px rgb(15 23 42 / 0.35);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    color: var(--success);
-    animation: ofloat 6s var(--ease-in-out) -2s infinite;
+    right: -2%;
+    top: -6%;
   }
 
-  @keyframes ofloat {
-    50% {
-      transform: translateY(-12px);
-    }
+  .ohero__visual :global(.ohero__stamp) {
+    position: absolute;
+    z-index: 2;
+    left: -9%;
+    bottom: -3%;
+    background: var(--bg);
+    border-radius: 50%;
   }
 
   @media (max-width: 959px) {
     .ohero__grid {
-      grid-template-columns: 1fr;
-    }
-
-    .ohero__copy {
-      justify-items: center;
-      text-align: center;
-    }
-
-    .ohero__actions {
-      justify-content: center;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .ohero__visual {
@@ -212,14 +207,21 @@ const stats = [
       width: 100%;
     }
 
-    .ohero__stats {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      width: 100%;
+    .ohero__actions :global(.btn__label) {
+      flex: 1;
+      justify-content: center;
     }
 
     .ohero__stats dd {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
+    }
+
+    .ohero__visual :global(.ohero__tag) {
+      right: 0;
+    }
+
+    .ohero__visual :global(.ohero__stamp) {
+      display: none;
     }
   }
 </style>

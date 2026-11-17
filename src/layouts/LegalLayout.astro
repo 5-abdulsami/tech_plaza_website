@@ -1,7 +1,7 @@
 ---
 /**
  * Layout for Markdown content pages (privacy, terms, account deletion).
- * Frontmatter: title, description, eyebrow?, lead?
+ * Frontmatter: title, description, label?, lead?
  */
 import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
@@ -13,7 +13,8 @@ interface Props {
   frontmatter: {
     title: string;
     description: string;
-    eyebrow?: string;
+    /** Breadcrumb label; defaults to the title. */
+    label?: string;
     lead?: string;
     /** Hide the table of contents for short pages. */
     toc?: boolean;
@@ -28,7 +29,7 @@ const showToc = frontmatter.toc !== false && toc.length > 2;
 
 <BaseLayout title={frontmatter.title} description={frontmatter.description}>
   <PageHeader
-    eyebrow={frontmatter.eyebrow ?? 'Legal'}
+    label={frontmatter.label ?? frontmatter.title}
     title={frontmatter.title}
     lead={frontmatter.lead}
     meta={`Last updated ${site.legalUpdated}`}
@@ -90,6 +91,7 @@ const showToc = frontmatter.toc !== false && toc.length > 2;
 <style>
   .legal {
     padding-bottom: var(--section-y);
+    counter-reset: h2;
   }
 
   .legal--toc {
@@ -112,9 +114,10 @@ const showToc = frontmatter.toc !== false && toc.length > 2;
 
   .legal__toc-title {
     margin-bottom: 0.75rem;
-    font-size: var(--fs-xs);
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-3);
   }
@@ -142,9 +145,9 @@ const showToc = frontmatter.toc !== false && toc.length > 2;
   }
 
   .legal__toc a[aria-current] {
-    color: var(--brand);
+    color: var(--text);
     font-weight: 600;
-    border-left-color: var(--brand);
+    border-left-color: var(--accent);
   }
 
   /* Prose */
@@ -156,15 +159,32 @@ const showToc = frontmatter.toc !== false && toc.length > 2;
     overflow-wrap: break-word;
   }
 
+  /* Numbered section headings, like clauses */
   .prose :global(h2) {
-    margin: 2.75rem 0 1rem;
+    counter-increment: h2;
+    margin: 3rem 0 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
     font-size: var(--fs-xl);
     color: var(--text);
     scroll-margin-top: calc(var(--header-h) + 24px);
   }
 
+  .prose :global(h2)::before {
+    content: counter(h2, decimal-leading-zero);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent-700);
+  }
+
   .prose :global(h2:first-child) {
     margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
   }
 
   .prose :global(h3) {
@@ -189,7 +209,7 @@ const showToc = frontmatter.toc !== false && toc.length > 2;
   }
 
   .prose :global(li::marker) {
-    color: var(--brand);
+    color: var(--accent-700);
   }
 
   .prose :global(strong) {
@@ -228,9 +248,13 @@ const showToc = frontmatter.toc !== false && toc.length > 2;
   }
 
   .prose :global(th) {
-    color: var(--text);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
     font-weight: 600;
-    background: var(--slate-100);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--slate-900);
   }
 
   .prose :global(blockquote) {
@@ -253,8 +277,9 @@ const showToc = frontmatter.toc !== false && toc.length > 2;
     margin-top: 3rem;
     padding: 1.25rem 1.5rem;
     border-radius: var(--radius);
-    background: var(--brand-tint);
-    color: var(--brand);
+    border: 1.5px solid var(--rule-strong);
+    background: var(--accent-tint);
+    color: var(--slate-900);
   }
 
   .legal__contact :global(svg) {

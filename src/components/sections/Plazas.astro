@@ -1,6 +1,5 @@
 ---
 import SectionHeading from '@/components/ui/SectionHeading.astro';
-import Icon from '@/components/ui/Icon.astro';
 import { categories, plazas } from '@/data/plazas';
 import { site } from '@/config/site';
 ---
@@ -8,33 +7,63 @@ import { site } from '@/config/site';
 <section id="plazas" class="section plazas" aria-labelledby="plazas-title">
   <div class="container">
     <SectionHeading
+      index="06"
+      label={`Plazas in ${site.city}`}
       id="plazas-title"
-      eyebrow={`Plazas in ${site.city}`}
-      title="The places you already shop, <em>in one app</em>"
+      title="The places you already shop, <span class='mark'>in one app.</span>"
       lead="Browse one plaza or all of them at once. We’re starting in Dubai Plaza and adding shops across the city."
     />
 
-    <ul class="plazas__grid" role="list">
-      {
-        plazas.map((p, i) => (
-          <li class:list={['plaza', { 'plaza--launch': p.launch }]} data-reveal style={`--reveal-i:${i % 3}`}>
-            <span class="plaza__icon">
-              <Icon name="store" size={22} />
-            </span>
-            <span class="plaza__text">
-              <strong>{p.name}</strong>
-              <span>
-                <Icon name="map-pin" size={14} /> {p.area}, {site.city}
-              </span>
-            </span>
-            {p.launch && <span class="plaza__badge">Launching first</span>}
-          </li>
-        ))
-      }
-    </ul>
+    <div class="board" data-reveal>
+      <div class="board__top">
+        <span class="board__lights" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>Directory · {site.city} tech plazas</span>
+        <span class="board__count">{String(plazas.length).padStart(2, '0')}</span>
+      </div>
 
-    <div class="plazas__cats" data-reveal>
-      <p>Shop by category</p>
+      <table class="board__table">
+        <caption class="visually-hidden">Plazas available in Tech Plaza</caption>
+        <thead>
+          <tr>
+            <th scope="col">No.</th>
+            <th scope="col">Plaza</th>
+            <th scope="col" class="board__loc">Location</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            plazas.map((p, i) => (
+              <tr class:list={{ 'is-launch': p.launch }}>
+                <td class="board__no">{String(i + 1).padStart(2, '0')}</td>
+                <th scope="row" class="board__name">
+                  <span data-scramble data-scramble-delay={i * 120}>
+                    {p.name}
+                  </span>
+                  <span class="board__sub">{p.area}</span>
+                </th>
+                <td class="board__loc">
+                  {p.area}, {site.city}
+                </td>
+                <td class="board__status">
+                  {p.launch ? (
+                    <span class="status status--launch">
+                      <i aria-hidden="true" />
+                      Launching first
+                    </span>
+                  ) : (
+                    <span class="status">In the app</span>
+                  )}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cats" data-reveal>
+      <p class="label">Shop by category</p>
       <ul role="list">
         {categories.map((c) => <li>{c}</li>)}
       </ul>
@@ -42,143 +71,253 @@ import { site } from '@/config/site';
   </div>
 </section>
 
+<script>
+  import { initScramble } from '@/scripts/scramble';
+  initScramble();
+</script>
+
 <style>
-  .plazas__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+  /* A backlit plaza directory board */
+  .board {
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background: var(--brand-900);
+    color: #fff;
+    box-shadow:
+      inset 0 0 0 6px var(--slate-800),
+      inset 0 0 0 7px rgb(255 255 255 / 0.06),
+      var(--shadow-lg);
+    padding: 6px;
   }
 
-  .plaza {
-    position: relative;
+  .board__top {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1.25rem 1.4rem;
-    border-radius: var(--radius-lg);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    transition:
-      transform 0.4s var(--ease),
-      box-shadow 0.4s var(--ease),
-      border-color 0.4s var(--ease),
-      opacity var(--dur) var(--ease);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--rule-inverse);
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.65);
   }
 
-  .plaza:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow);
-    border-color: var(--brand-tint-2);
+  .board__lights {
+    display: inline-flex;
+    gap: 5px;
   }
 
-  .plaza--launch {
-    border-color: rgb(245 158 11 / 0.5);
-    background: linear-gradient(135deg, #fff, #fffbeb);
-  }
-
-  .plaza__icon {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: var(--brand-tint);
-    color: var(--brand);
-  }
-
-  .plaza--launch .plaza__icon {
-    background: var(--accent-tint);
-    color: var(--accent-700);
-  }
-
-  .plaza__text {
-    display: grid;
-    gap: 0.2rem;
-    min-width: 0;
-  }
-
-  .plaza__text strong {
-    font-size: 1.0625rem;
-    letter-spacing: -0.01em;
-  }
-
-  .plaza__text span {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: var(--fs-xs);
-    color: var(--text-3);
-  }
-
-  .plaza__text :global(svg) {
-    flex: none;
-  }
-
-  .plaza__badge {
-    position: absolute;
-    top: -10px;
-    right: 1rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: var(--radius-pill);
+  .board__lights i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
     background: var(--accent);
-    color: var(--slate-900);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
+    box-shadow: 0 0 8px var(--accent);
+    animation: blink 2.4s steps(1) infinite;
   }
 
-  .plazas__cats {
-    display: grid;
-    justify-items: center;
-    gap: 1rem;
-    margin-top: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  .board__lights i:nth-child(2) {
+    animation-delay: 0.8s;
   }
 
-  .plazas__cats p {
+  .board__lights i:nth-child(3) {
+    animation-delay: 1.6s;
+  }
+
+  .board__count {
+    margin-left: auto;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid rgb(245 158 11 / 0.5);
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  .board__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .board__table th,
+  .board__table td {
+    padding: 1.15rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--rule-inverse);
+  }
+
+  .board__table tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  .board__table thead th {
+    padding-block: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.4);
+  }
+
+  .board__table tbody tr {
+    transition: background-color 0.25s var(--ease);
+  }
+
+  .board__table tbody tr:hover {
+    background: rgb(255 255 255 / 0.04);
+  }
+
+  .board__no {
+    width: 4.5rem;
+    font-family: var(--font-mono);
     font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .board__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  .board__name span {
+    display: inline-block;
+  }
+
+  .board__sub {
+    display: none !important;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .board__loc {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .board__status {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--rule-inverse);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--text-3);
+    color: rgb(255 255 255 / 0.7);
   }
 
-  .plazas__cats ul {
+  .status--launch {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--slate-900);
+  }
+
+  .status--launch i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--slate-900);
+    animation: blink 1.2s steps(1) infinite;
+  }
+
+  /* Categories as small paper tags */
+  .cats {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.625rem;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 2.5rem;
   }
 
-  .plazas__cats li {
-    padding: 0.5rem 1.1rem;
-    border-radius: var(--radius-pill);
-    background: var(--surface);
-    border: 1px solid var(--border);
+  .cats ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .cats li {
+    position: relative;
+    padding: 0.45rem 0.9rem 0.45rem 1.6rem;
+    border: 1.5px solid var(--slate-900);
+    border-radius: 4px 8px 8px 4px;
+    background: var(--paper);
     font-size: var(--fs-sm);
-    font-weight: 500;
-    color: var(--text-2);
+    font-weight: 600;
     transition:
-      background-color var(--dur-fast),
-      color var(--dur-fast),
-      border-color var(--dur-fast);
+      transform 0.25s var(--ease),
+      box-shadow 0.25s var(--ease);
   }
 
-  .plazas__cats li:hover {
-    background: var(--brand);
-    border-color: var(--brand);
-    color: #fff;
+  .cats li::before {
+    content: '';
+    position: absolute;
+    left: 0.6rem;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    translate: 0 -50%;
+    box-shadow: inset 0 0 0 1.5px var(--slate-900);
   }
 
-  @media (max-width: 1023px) {
-    .plazas__grid {
-      grid-template-columns: repeat(2, 1fr);
+  .cats li:hover {
+    transform: translate(-2px, -2px) rotate(-2deg);
+    box-shadow: 3px 3px 0 var(--accent);
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0.25;
     }
   }
 
-  @media (max-width: 599px) {
-    .plazas__grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 719px) {
+    .board__loc {
+      display: none;
+    }
+
+    .board__table th,
+    .board__table td {
+      padding: 1rem 0.9rem;
+    }
+
+    .board__no {
+      width: 2.5rem;
+    }
+
+    .board__name {
+      white-space: normal;
+      font-size: 1.125rem;
+    }
+
+    .board__sub {
+      display: block !important;
+      margin-top: 0.2rem;
+    }
+  }
+
+  @media (max-width: 419px) {
+    .status {
+      padding: 0.25rem 0.45rem;
+      font-size: 0.5625rem;
+      letter-spacing: 0.04em;
     }
   }
 </style>

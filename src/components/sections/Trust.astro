@@ -1,156 +1,235 @@
 ---
 import SectionHeading from '@/components/ui/SectionHeading.astro';
-import FeatureCard from '@/components/ui/FeatureCard.astro';
+import Stamp from '@/components/ui/Stamp.astro';
+import Icon from '@/components/ui/Icon.astro';
 import { trustPoints } from '@/data/features';
 
-const flow = ['Shop applies', 'CNIC checked', 'Shop approved', 'Product reviewed', 'Live for customers'];
+const flow = [
+  { title: 'Shop applies', body: 'Owner signs up with shop details.' },
+  { title: 'CNIC checked', body: 'Identity verified by our team.' },
+  { title: 'Shop approved', body: 'Only then does the shop appear.' },
+  { title: 'Product reviewed', body: 'Every new listing is checked.' },
+  { title: 'Live for customers', body: 'You see it in the app.' },
+];
 ---
 
 <section id="trust" class="section trust" aria-labelledby="trust-title">
   <div class="container">
     <SectionHeading
+      index="05"
+      label="Trust & safety"
       id="trust-title"
-      eyebrow="Trust & safety"
-      title="Real shops. <em>Reviewed listings.</em>"
+      title="Real shops. <span class='mark'>Checked listings.</span>"
       lead="Nothing appears in the app until a person on our team has looked at it."
     />
 
-    <ol class="trust__flow" role="list" data-reveal aria-label="Review process">
+    <div class="trust__grid">
+      <div class="trust__stamp" data-reveal="fade">
+        <Stamp text="Verified shop • CNIC checked • Listing reviewed • " size={220} />
+      </div>
+
+      <ol role="list" class="ledger" data-reveal data-ledger aria-label="Review process">
+        {
+          flow.map((step, i) => (
+            <li style={`--i:${i}`}>
+              <span class="ledger__tick" aria-hidden="true">
+                <Icon name="check" size={14} strokeWidth={3} />
+              </span>
+              <span class="ledger__no">{String(i + 1).padStart(2, '0')}</span>
+              <strong>{step.title}</strong>
+              <span class="ledger__body">{step.body}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <ul role="list" class="points">
       {
-        flow.map((label, i) => (
-          <li style={`--i:${i}`}>
-            <span class="trust__dot">{i + 1}</span>
-            <span>{label}</span>
+        trustPoints.map((p, i) => (
+          <li data-reveal style={`--reveal-i:${i}`}>
+            <span class="label points__key">
+              <Icon name={p.icon} size={16} />
+              {p.key}
+            </span>
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
           </li>
         ))
       }
-    </ol>
-
-    <div class="trust__grid">
-      {trustPoints.map((p, i) => <FeatureCard {...p} index={i} />)}
-    </div>
+    </ul>
   </div>
 </section>
 
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ledger]').forEach((el) => {
+    new IntersectionObserver(
+      ([entry], obs) => {
+        if (entry.isIntersecting) {
+          el.classList.add('is-ticked');
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.5 },
+    ).observe(el);
+  });
+</script>
+
 <style>
-  .trust {
-    background: var(--surface);
-    border-block: 1px solid var(--border);
-  }
-
-  .trust__flow {
-    position: relative;
+  .trust__grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    max-width: 920px;
-    margin: 0 auto clamp(2.5rem, 2rem + 2vw, 4rem);
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+    align-items: center;
+    margin-bottom: clamp(3rem, 2rem + 4vw, 5rem);
   }
 
-  .trust__flow::before {
-    content: '';
-    position: absolute;
-    top: 19px;
-    left: 10%;
-    right: 10%;
-    height: 2px;
-    background: linear-gradient(to right, var(--brand-tint-2), var(--brand), var(--success));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 1.6s var(--ease) 0.2s;
-  }
-
-  .trust__flow.is-visible::before,
-  :global(html:not(.js)) .trust__flow::before {
-    transform: none;
-  }
-
-  .trust__flow li {
-    position: relative;
+  .trust__stamp {
     display: grid;
-    justify-items: center;
-    gap: 0.75rem;
-    text-align: center;
-    font-size: var(--fs-xs);
-    font-weight: 600;
+    place-items: center;
+    padding: 1rem;
+  }
+
+  /* A ledger of review steps that tick off in order */
+  .ledger {
+    display: grid;
+    border-top: 1.5px solid var(--rule-strong);
+  }
+
+  .ledger li {
+    display: grid;
+    grid-template-columns: 28px 2.5rem minmax(0, 12rem) minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .ledger__tick {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid var(--slate-300);
+    border-radius: 6px;
+    color: transparent;
+    transition:
+      background-color 0.3s var(--ease),
+      border-color 0.3s var(--ease),
+      color 0.3s var(--ease),
+      transform 0.4s var(--ease-back);
+    transition-delay: calc(var(--i) * 0.35s + 0.2s);
+  }
+
+  .is-ticked .ledger__tick,
+  :global(html:not(.js)) .ledger__tick {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+    transform: scale(1.08);
+  }
+
+  .is-ticked li:last-child .ledger__tick {
+    background: var(--success);
+    border-color: var(--success);
+  }
+
+  .ledger__no {
+    font-family: var(--font-mono);
+    font-size: var(--fs-2xs);
+    font-weight: 700;
+    color: var(--text-3);
+  }
+
+  .ledger strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    letter-spacing: -0.02em;
+  }
+
+  .ledger__body {
+    font-size: var(--fs-sm);
     color: var(--text-2);
   }
 
-  .trust__dot {
+  /* Trust points: four columns divided by hairlines */
+  .points {
     display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 2px solid var(--brand);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1.5px solid var(--rule-strong);
+  }
+
+  .points li {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding: 1.5rem 1.5rem 0.5rem 0;
+  }
+
+  .points li + li {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--rule);
+  }
+
+  .points__key {
     color: var(--brand);
+  }
+
+  .points h3 {
+    font-size: 1.1875rem;
+  }
+
+  .points p {
     font-size: var(--fs-sm);
-    font-weight: 700;
-    transform: scale(0.6);
-    opacity: 0;
-    transition:
-      transform 0.6s var(--ease),
-      opacity 0.6s var(--ease);
-    transition-delay: calc(var(--i) * 0.28s + 0.2s);
+    color: var(--text-2);
   }
 
-  .trust__flow.is-visible .trust__dot,
-  :global(html:not(.js)) .trust__dot {
-    transform: none;
-    opacity: 1;
-  }
-
-  .trust__flow li:last-child .trust__dot {
-    background: var(--success);
-    border-color: var(--success);
-    color: #fff;
-  }
-
-  .trust__grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-  }
-
-  @media (max-width: 1023px) {
+  @media (max-width: 959px) {
     .trust__grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
+    }
+
+    .points {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .points li:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .points li:nth-child(n + 3) {
+      border-top: 1px solid var(--rule);
     }
   }
 
   @media (max-width: 639px) {
-    .trust__flow {
+    .ledger li {
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 0.25rem 1rem;
+    }
+
+    .ledger__no {
+      display: none;
+    }
+
+    .ledger__body {
+      grid-column: 2;
+    }
+
+    .points {
       grid-template-columns: 1fr;
-      justify-items: start;
-      gap: 1rem;
-      max-width: 20rem;
     }
 
-    .trust__flow::before {
-      top: 10%;
-      bottom: 10%;
-      left: 19px;
-      right: auto;
-      width: 2px;
-      height: auto;
-      transform: scaleY(0);
-      transform-origin: top;
-      background: linear-gradient(to bottom, var(--brand-tint-2), var(--brand), var(--success));
+    .points li,
+    .points li + li {
+      padding: 1.25rem 0;
+      border-left: 0;
+      border-top: 1px solid var(--rule);
     }
 
-    .trust__flow li {
-      grid-auto-flow: column;
-      justify-items: start;
-      align-items: center;
-      gap: 1rem;
-      text-align: left;
-      font-size: var(--fs-sm);
-    }
-  }
-
-  @media (max-width: 479px) {
-    .trust__grid {
-      grid-template-columns: 1fr;
+    .points li:first-child {
+      border-top: 0;
     }
   }
 </style>

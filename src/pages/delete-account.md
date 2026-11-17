@@ -1,7 +1,7 @@
 ---
 layout: ../layouts/LegalLayout.astro
 title: Delete your account
-eyebrow: Account
+label: Account
 description: How to delete your Tech Plaza account and what happens to your data.
 lead: You can delete your Tech Plaza account and the data linked to it at any time, in the app or by email.
 toc: false

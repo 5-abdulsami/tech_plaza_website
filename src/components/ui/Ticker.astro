@@ -1,0 +1,99 @@
+---
+/**
+ * A scrolling band of words, like the LED sign above a plaza shop.
+ * Items are duplicated once so the loop is seamless.
+ */
+interface Props {
+  items: string[];
+  tone?: 'brand' | 'accent';
+  /** Seconds for one full loop. */
+  speed?: number;
+  reverse?: boolean;
+  class?: string;
+}
+
+const { items, tone = 'brand', speed = 40, reverse = false, class: className } = Astro.props;
+---
+
+<div class:list={['ticker', `ticker--${tone}`, { 'ticker--reverse': reverse }, className]} style={`--speed:${speed}s`}>
+  <p class="visually-hidden">{items.join(', ')}</p>
+  <div class="ticker__track" aria-hidden="true">
+    {
+      [0, 1].map(() => (
+        <ul class="ticker__group">
+          {items.map((item) => (
+            <li>
+              {item}
+              <span class="ticker__sep">◆</span>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .ticker {
+    overflow: hidden;
+    background: var(--brand);
+    color: #fff;
+    border-block: 1px solid var(--brand-700);
+  }
+
+  .ticker--accent {
+    background: var(--accent);
+    color: var(--slate-900);
+    border-color: var(--accent-600);
+  }
+
+  .ticker__track {
+    display: flex;
+    width: max-content;
+    animation: ticker var(--speed) linear infinite;
+  }
+
+  .ticker--reverse .ticker__track {
+    animation-direction: reverse;
+  }
+
+  .ticker:hover .ticker__track {
+    animation-play-state: paused;
+  }
+
+  .ticker__group {
+    display: flex;
+    flex: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ticker__group li {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    padding: 1rem 0 1rem 1.75rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .ticker__sep {
+    color: var(--accent);
+    font-size: 0.6em;
+  }
+
+  .ticker--accent .ticker__sep {
+    color: var(--brand);
+  }
+
+  @keyframes ticker {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

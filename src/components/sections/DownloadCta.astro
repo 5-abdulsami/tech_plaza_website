@@ -11,115 +11,120 @@ interface Props {
 }
 
 const {
-  title = 'Your next gadget is closer than you think',
+  title = 'Your next gadget is <span class="cta__u">closer</span> than you think.',
   lead = site.app.playStoreUrl
     ? 'Download Tech Plaza for Android and see what’s in stock across Rawalpindi’s tech plazas.'
     : 'Tech Plaza is coming soon to Google Play. Shop owners can get in touch now to be listed from day one.',
 } = Astro.props;
 ---
 
-<section id="download" class="cta-wrap" aria-labelledby="download-title">
-  <div class="container">
-    <div class="cta" data-reveal="scale">
-      <div class="cta__rings" aria-hidden="true"><span></span><span></span><span></span></div>
-      <Image src={logo} alt="" width={88} height={88} widths={[88, 176]} sizes="88px" format="webp" class="cta__logo" />
-      <h2 id="download-title" class="cta__title">{title}</h2>
-      <p class="cta__lead">{lead}</p>
-      <div class="cta__actions">
-        <StoreButton tone="light" />
-        {
-          !site.app.playStoreUrl && (
-            <Button href={`mailto:${site.contact.email}?subject=List%20my%20shop%20on%20Tech%20Plaza`} variant="outline-light" size="lg" iconStart="mail">
-              List my shop
-            </Button>
-          )
-        }
-      </div>
+<section id="download" class="cta" aria-labelledby="download-title">
+  <div class="container cta__grid">
+    <div class="cta__copy">
+      <p class="label cta__label" data-reveal="fade">Admit one · Free entry</p>
+      <h2 id="download-title" class="cta__title" data-reveal="wipe" set:html={title} />
+      <p class="cta__lead" data-reveal style="--reveal-i:2">{lead}</p>
+    </div>
+
+    <div class="cta__side" data-reveal style="--reveal-i:2">
+      <Image src={logo} alt="" width={96} height={96} widths={[96, 192]} sizes="96px" format="webp" class="cta__logo" />
+      <StoreButton />
+      {
+        !site.app.playStoreUrl && (
+          <Button href={`mailto:${site.contact.email}?subject=List%20my%20shop%20on%20Tech%20Plaza`} variant="secondary" size="lg" iconStart="mail">
+            List my shop
+          </Button>
+        )
+      }
     </div>
   </div>
 </section>
 
 <style>
-  .cta-wrap {
-    padding-block: 0 var(--section-y);
-  }
-
+  /* Amber band with perforated edges, like a ticket stub */
   .cta {
+    --hole: 9px;
     position: relative;
+    padding-block: clamp(4rem, 3rem + 5vw, 7rem);
+    background: var(--accent);
+    color: var(--slate-900);
+    mask:
+      radial-gradient(var(--hole) at 50% 0, #0000 98%, #000) 50% 0 / calc(var(--hole) * 3.2) 51% repeat-x,
+      radial-gradient(var(--hole) at 50% 100%, #0000 98%, #000) 50% 100% / calc(var(--hole) * 3.2) 51% repeat-x;
+    -webkit-mask:
+      radial-gradient(var(--hole) at 50% 0, #0000 98%, #000) 50% 0 / calc(var(--hole) * 3.2) 51% repeat-x,
+      radial-gradient(var(--hole) at 50% 100%, #0000 98%, #000) 50% 100% / calc(var(--hole) * 3.2) 51% repeat-x;
+  }
+
+  .cta__grid {
     display: grid;
-    justify-items: center;
+    grid-template-columns: minmax(0, 1.5fr) auto;
+    gap: clamp(2rem, 1rem + 5vw, 6rem);
+    align-items: end;
+  }
+
+  .cta__copy {
+    display: grid;
     gap: 1.25rem;
-    padding: clamp(3rem, 2rem + 5vw, 5.5rem) clamp(1.25rem, 1rem + 3vw, 4rem);
-    overflow: hidden;
-    border-radius: var(--radius-xl);
-    text-align: center;
-    color: #fff;
-    /* Same gradient direction as the app's splash screen. */
-    background: linear-gradient(165deg, var(--brand) 0%, var(--splash-deep) 100%);
-    box-shadow: var(--shadow-lg);
-    isolation: isolate;
   }
 
-  .cta__rings {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    z-index: -1;
-  }
-
-  .cta__rings span {
-    position: absolute;
-    width: 30rem;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 1px solid rgb(255 255 255 / 0.08);
-    animation: ripple 6s var(--ease) infinite;
-  }
-
-  .cta__rings span:nth-child(2) {
-    animation-delay: -2s;
-  }
-
-  .cta__rings span:nth-child(3) {
-    animation-delay: -4s;
-  }
-
-  .cta :global(.cta__logo) {
-    border-radius: 50%;
-    box-shadow: 0 0 0 8px rgb(255 255 255 / 0.06), 0 20px 40px -12px rgb(0 0 0 / 0.5);
+  .cta__label {
+    color: rgb(15 23 42 / 0.7);
   }
 
   .cta__title {
-    max-width: 20ch;
     font-size: var(--fs-2xl);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    max-width: 14ch;
+  }
+
+  .cta__title :global(.cta__u) {
+    font-style: italic;
+    font-variation-settings: 'wdth' 75;
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.12em;
   }
 
   .cta__lead {
-    max-width: 36rem;
-    color: rgb(255 255 255 / 0.75);
+    max-width: 34rem;
     font-size: var(--fs-lg);
+    color: rgb(15 23 42 / 0.78);
   }
 
-  .cta__actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.875rem;
-    margin-top: 0.75rem;
+  .cta__side {
+    display: grid;
+    justify-items: start;
+    gap: 1rem;
+    padding-left: clamp(0rem, 3vw, 3rem);
+    border-left: 1.5px dashed rgb(15 23 42 / 0.35);
   }
 
-  @keyframes ripple {
-    0% {
-      transform: scale(0.4);
-      opacity: 0;
+  .cta__side :global(.cta__logo) {
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px var(--slate-900);
+    margin-bottom: 0.5rem;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .cta__side:hover :global(.cta__logo) {
+    transform: rotate(-20deg);
+  }
+
+  .cta__side :global(.btn--secondary) {
+    --bg: transparent;
+  }
+
+  @media (max-width: 859px) {
+    .cta__grid {
+      grid-template-columns: 1fr;
     }
-    30% {
-      opacity: 1;
-    }
-    100% {
-      transform: scale(2);
-      opacity: 0;
+
+    .cta__side {
+      padding: 2rem 0 0;
+      border-left: 0;
+      border-top: 1.5px dashed rgb(15 23 42 / 0.35);
     }
   }
 </style>

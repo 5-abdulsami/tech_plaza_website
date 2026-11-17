@@ -1,62 +1,87 @@
 ---
+/**
+ * Header for inner pages: a mono breadcrumb, a large left-aligned title with
+ * the lead beside it, and a heavy rule underneath.
+ */
 interface Props {
-  eyebrow?: string;
+  /** Breadcrumb label after "techplaza.app /". */
+  label?: string;
   title: string;
   lead?: string;
   /** Small line under the lead, e.g. "Last updated …". */
   meta?: string;
 }
 
-const { eyebrow, title, lead, meta } = Astro.props;
+const { label, title, lead, meta } = Astro.props;
 ---
 
 <section class="page-header">
-  <div class="page-header__bg" aria-hidden="true"></div>
-  <div class="container-narrow page-header__inner">
-    {eyebrow && <p class="eyebrow" data-reveal>{eyebrow}</p>}
-    <h1 class="page-header__title" data-reveal style="--reveal-i:1" set:html={title} />
-    {lead && <p class="lead" data-reveal style="--reveal-i:2">{lead}</p>}
-    {meta && <p class="page-header__meta" data-reveal style="--reveal-i:3">{meta}</p>}
-    <slot />
+  <div class="container page-header__inner">
+    <p class="label page-header__crumb" data-reveal="fade">
+      <a href="/">techplaza.app</a>
+      {label && <span aria-hidden="true">/</span>}
+      {label && <span class="page-header__here">{label}</span>}
+    </p>
+    <h1 class="page-header__title" data-reveal="wipe" set:html={title} />
+    <div class="page-header__side">
+      {lead && <p class="lead" data-reveal style="--reveal-i:2">{lead}</p>}
+      {meta && <p class="label page-header__meta" data-reveal style="--reveal-i:3">{meta}</p>}
+      <slot />
+    </div>
   </div>
 </section>
 
 <style>
   .page-header {
-    position: relative;
-    margin-top: calc(var(--header-h) * -1);
-    padding: calc(var(--header-h) + clamp(3rem, 2rem + 4vw, 5.5rem)) 0 clamp(3rem, 2rem + 3vw, 4.5rem);
-    overflow: hidden;
-    text-align: center;
-  }
-
-  .page-header__bg {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(50rem 26rem at 50% -10%, rgb(17 30 115 / 0.1), transparent 70%),
-      linear-gradient(180deg, #fff, var(--bg));
+    padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) 0 clamp(2.5rem, 2rem + 2vw, 3.5rem);
+    margin-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    border-bottom: 1.5px solid var(--rule-strong);
   }
 
   .page-header__inner {
     display: grid;
-    justify-items: center;
-    gap: 1.1rem;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 1.25rem 3rem;
+    align-items: end;
+  }
+
+  .page-header__crumb {
+    grid-column: 1 / -1;
+    gap: 0.6rem;
+  }
+
+  .page-header__crumb a {
+    transition: color var(--dur-fast);
+  }
+
+  .page-header__crumb a:hover {
+    color: var(--brand);
+  }
+
+  .page-header__here {
+    color: var(--brand);
   }
 
   .page-header__title {
     font-size: var(--fs-3xl);
-    letter-spacing: -0.04em;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
   }
 
-  .page-header__title :global(em) {
-    font-style: normal;
-    color: var(--brand);
+  .page-header__side {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
   }
 
   .page-header__meta {
-    font-size: var(--fs-xs);
     color: var(--text-3);
+  }
+
+  @media (max-width: 899px) {
+    .page-header__inner {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

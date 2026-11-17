@@ -23,9 +23,11 @@ const { tone = 'default', size = 40, compact = false } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.1875rem;
-    letter-spacing: -0.03em;
+    font-size: 1.3125rem;
+    letter-spacing: -0.035em;
+    transition: color 0.3s var(--ease);
     color: var(--brand);
   }
 

@@ -1,122 +1,150 @@
 ---
 import SectionHeading from '@/components/ui/SectionHeading.astro';
-import FeatureCard from '@/components/ui/FeatureCard.astro';
+import SpecSheet from '@/components/ui/SpecSheet.astro';
 import PhoneFrame from '@/components/ui/PhoneFrame.astro';
 import { customerFeatures } from '@/data/features';
 import plazaPicker from '@/assets/screens/plaza-picker.png';
 import favorites from '@/assets/screens/favorites.png';
 import chatList from '@/assets/screens/chat-list.png';
 
-const showcase = [
-  { src: plazaPicker, title: 'Choose your plaza', alt: 'Plaza picker listing Rawalpindi tech plazas' },
-  { src: favorites, title: 'Keep a shortlist', alt: 'Favourites screen with two saved products' },
-  { src: chatList, title: 'All your chats', alt: 'Chat list with a conversation with Laptop Point' },
+const shelf = [
+  { src: plazaPicker, code: 'Screen 01', title: 'Choose your plaza', alt: 'Plaza picker listing Rawalpindi tech plazas' },
+  { src: favorites, code: 'Screen 02', title: 'Keep a shortlist', alt: 'Favourites screen with two saved products' },
+  { src: chatList, code: 'Screen 03', title: 'All your chats', alt: 'Chat list with a conversation with Laptop Point' },
 ];
 ---
 
 <section id="features" class="section features" aria-labelledby="features-title">
   <div class="container">
     <SectionHeading
+      index="03"
+      label="For customers"
       id="features-title"
-      eyebrow="For customers"
-      title="Everything you need to <em>shop smarter</em>"
-      lead="Built for how people in Pakistan actually buy electronics: see it, ask about it, bargain if you like, then pick it up in person."
+      title="Built for how Pindi <span class='mark'>buys tech.</span>"
+      lead="See it, ask about it, bargain if you like, then pick it up in person. Everything in the app serves that one trip."
     />
 
-    <div class="features__showcase">
-      {
-        showcase.map((item, i) => (
-          <figure class="shot" data-reveal style={`--reveal-i:${i}`}>
-            <PhoneFrame src={item.src} alt={item.alt} width={240} />
-            <figcaption>{item.title}</figcaption>
-          </figure>
-        ))
-      }
+    <div class="shelf">
+      <ul role="list" class="shelf__items">
+        {
+          shelf.map((item, i) => (
+            <li class="shelf__item" data-reveal style={`--reveal-i:${i}`}>
+              <PhoneFrame src={item.src} alt={item.alt} width={240} />
+              <div class="shelf__label">
+                <span>{item.code}</span>
+                <strong>{item.title}</strong>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <span class="shelf__board" aria-hidden="true"></span>
     </div>
 
-    <div class="features__grid">
-      {customerFeatures.map((f, i) => <FeatureCard {...f} index={i} />)}
-    </div>
+    <SpecSheet items={customerFeatures} title="Spec sheet · Customer app" meta="Free" />
   </div>
 </section>
 
 <style>
-  .features__showcase {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 240px));
-    justify-content: center;
-    gap: clamp(1.25rem, 0.5rem + 4vw, 4rem);
-    margin-bottom: clamp(3rem, 2rem + 4vw, 5rem);
+  /* Phones standing on a display shelf, each with a shelf label */
+  .shelf {
+    position: relative;
+    margin-bottom: clamp(3rem, 2rem + 4vw, 5.5rem);
   }
 
-  .shot {
+  .shelf__items {
     display: grid;
-    gap: 1.25rem;
+    grid-template-columns: repeat(3, minmax(0, 230px));
+    justify-content: center;
+    gap: clamp(1.5rem, 0.5rem + 5vw, 5rem);
+    position: relative;
+    z-index: 1;
+  }
+
+  .shelf__item {
+    display: grid;
     justify-items: center;
   }
 
-  .shot:nth-child(2) {
-    translate: 0 -1.5rem;
-  }
-
-  .shot :global(.phone) {
+  .shelf__item :global(.phone) {
     transition: transform 0.6s var(--ease);
   }
 
-  .shot:hover :global(.phone) {
-    transform: translateY(-8px) rotate(-1deg);
+  .shelf__item:hover :global(.phone) {
+    transform: translateY(-10px);
   }
 
-  .shot figcaption {
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    color: var(--text-2);
+  .shelf__board {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3.6rem;
+    height: 18px;
+    border-radius: 3px;
+    background: linear-gradient(var(--slate-300), var(--slate-200));
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.8) inset,
+      0 14px 24px -12px rgb(15 23 42 / 0.35);
   }
 
-  .features__grid {
+  .shelf__label {
+    position: relative;
+    z-index: 2;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: 0.1rem;
+    min-width: 11rem;
+    margin-top: 1.25rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--paper);
+    border: 1.5px solid var(--slate-900);
+    border-radius: 4px;
+    text-align: center;
   }
 
-  @media (max-width: 1023px) {
-    .features__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  .shelf__label span {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .shelf__label strong {
+    font-size: var(--fs-sm);
   }
 
   @media (max-width: 767px) {
-    /* Swipeable row of phones on small screens. */
-    .features__showcase {
+    /* Swipeable shelf on small screens */
+    .shelf {
+      margin-inline: calc(var(--gutter) * -1);
+    }
+
+    .shelf__items {
       grid-template-columns: none;
       grid-auto-flow: column;
       grid-auto-columns: 62%;
       justify-content: start;
-      gap: 1rem;
-      margin-inline: calc(var(--gutter) * -1);
-      padding: 0.5rem var(--gutter) 1rem;
+      gap: 1.25rem;
+      padding: 0.75rem var(--gutter) 0.25rem;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scroll-padding-inline: var(--gutter);
       scrollbar-width: none;
     }
 
-    .features__showcase::-webkit-scrollbar {
+    .shelf__items::-webkit-scrollbar {
       display: none;
     }
 
-    .shot {
+    .shelf__item {
       scroll-snap-align: start;
     }
 
-    .shot:nth-child(2) {
-      translate: none;
-    }
-  }
-
-  @media (max-width: 479px) {
-    .features__grid {
-      grid-template-columns: 1fr;
+    .shelf__board {
+      left: var(--gutter);
+      right: var(--gutter);
+      bottom: 3.35rem;
     }
   }
 </style>
