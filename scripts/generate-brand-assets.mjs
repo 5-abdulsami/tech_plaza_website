@@ -76,7 +76,7 @@ const background = Buffer.from(`
   <rect width="100%" height="100%" fill="url(#glow)"/>
   <g font-family="Inter, 'Segoe UI', Arial, sans-serif" fill="#ffffff">
     <text x="80" y="300" font-size="76" font-weight="700" letter-spacing="-2">Tech Plaza</text>
-    <text x="80" y="370" font-size="38" font-weight="600" fill="#f59e0b">Discover Tech Near You</text>
+    <text x="80" y="370" font-size="38" font-weight="600" fill="#f59e0b">Know before you go</text>
     <text x="80" y="440" font-size="26" fill="#ffffff" fill-opacity="0.75">The electronics shops of Rawalpindi’s</text>
     <text x="80" y="478" font-size="26" fill="#ffffff" fill-opacity="0.75">tech plazas, in one app.</text>
     <text x="80" y="566" font-size="22" font-weight="600" fill="#ffffff" fill-opacity="0.9">techplaza.app</text>

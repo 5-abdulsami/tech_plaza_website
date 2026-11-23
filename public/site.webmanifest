@@ -1,7 +1,7 @@
 {
   "name": "Tech Plaza",
   "short_name": "Tech Plaza",
-  "description": "Discover Tech Near You",
+  "description": "Know before you go. The electronics shops of Rawalpindi’s tech plazas, in one app.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",

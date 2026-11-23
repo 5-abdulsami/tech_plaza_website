@@ -3,7 +3,11 @@
  */
 export const site = {
   name: 'Tech Plaza',
-  tagline: 'Discover Tech Near You',
+  /**
+   * Brand tagline, same as the app. Also written out in the hero headline,
+   * public/site.webmanifest and scripts/generate-brand-assets.mjs (og-image).
+   */
+  tagline: 'Know before you go',
   description:
     'Tech Plaza puts the electronics shops of Rawalpindi’s tech plazas on your phone. Browse phones, laptops and accessories, compare prices, and chat with the shop before you visit.',
   url: 'https://techplaza.app',
