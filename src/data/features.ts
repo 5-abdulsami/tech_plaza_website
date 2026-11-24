@@ -70,7 +70,7 @@ export const ownerFeatures: Feature[] = [
     icon: 'image-plus',
     key: 'Listings',
     title: 'Listings that sell',
-    body: 'Add 5 to 7 photos per product, set a price, and mark it negotiable or fixed.',
+    body: 'Add up to 5 photos per product, set a price, and mark it negotiable or fixed.',
   },
   {
     icon: 'eye-off',
